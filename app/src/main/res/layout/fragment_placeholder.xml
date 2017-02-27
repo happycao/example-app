@@ -1,0 +1,22 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             xmlns:tools="http://schemas.android.com/tools"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent"
+              android:orientation="vertical"
+             tools:context=".ui.fragment.PlaceholderFragment">
+
+   <android.support.v7.widget.RecyclerView
+       android:id="@+id/recycler_view"
+       android:layout_width="match_parent"
+       android:padding="2dp"
+       android:layout_height="0dp"
+       android:layout_weight="1"/>
+
+   <TextView
+       android:id="@+id/tv_pl"
+       android:layout_width="match_parent"
+       android:layout_height="45dp"
+       android:gravity="center"
+       android:text="下一页"/>
+
+</LinearLayout>
