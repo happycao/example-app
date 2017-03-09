@@ -32,6 +32,8 @@ import rx.functions.Func2;
  */
 public class LoginActivity extends BaseActivity {
 
+    public static final int REQUEST_LOGIN = 101;
+
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
     @BindView(R.id.et_username)

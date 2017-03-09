@@ -49,10 +49,10 @@
         </service>
 
         <activity android:name=".ui.activity.CheckBoxActivity"/>
-        <activity
-            android:name=".ui.activity.WebVideoActivity"
-            android:screenOrientation="landscape"
-            android:theme="@style/AppTheme.Fullscreen"/>
+
+        <!-- android:screenOrientation="landscape" -->
+        <!-- android:theme="@style/AppTheme.Fullscreen" -->
+        <activity android:name=".ui.activity.WebVideoActivity"/>
         <activity android:name=".ui.activity.AnimateActivity"/>
         <activity android:name=".ui.activity.ShapeRippleActivity"/>
         <activity android:name=".ui.activity.LoginActivity"/>
@@ -65,7 +65,7 @@
                 <category android:name="android.intent.category.DEFAULT"/>
                 <category android:name="android.intent.category.BROWSABLE"/>
 
-                <data android:scheme="znn"/>
+                <data android:scheme="xla"/>
             </intent-filter>
         </activity>
         <!-- 支付宝支付 -->
@@ -89,10 +89,8 @@
             android:name=".wxapi.WXEntryActivity"
             android:exported="true"
             android:theme="@android:style/Theme.Translucent"/>
-        <activity android:name=".mvc.UserActivity">
-        </activity>
-        <activity android:name=".mvp.MVPActivity">
-        </activity>
+        <activity android:name=".mvc.UserActivity"/>
+        <activity android:name=".mvp.MVPActivity"/>
     </application>
 
 </manifest>

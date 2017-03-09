@@ -17,6 +17,7 @@ public class User {
     private int age;
     private int sex;
     private String info;
+    private boolean isDel;
 
     @Generated(hash = 586692638)
     public User() {
@@ -29,13 +30,23 @@ public class User {
         this.info = info;
     }
 
-    @Generated(hash = 1523109509)
-    public User(Long id, String name, int age, int sex, String info) {
+    public User(String name, int age, int sex, String info, boolean isDel) {
+        this.name = name;
+        this.age = age;
+        this.sex = sex;
+        this.info = info;
+        this.isDel = isDel;
+    }
+
+    @Generated(hash = 79701715)
+    public User(Long id, String name, int age, int sex, String info,
+            boolean isDel) {
         this.id = id;
         this.name = name;
         this.age = age;
         this.sex = sex;
         this.info = info;
+        this.isDel = isDel;
     }
 
     public Long getId() {
@@ -76,5 +87,21 @@ public class User {
 
     public void setInfo(String info) {
         this.info = info;
+    }
+
+    public boolean isDel() {
+        return isDel;
+    }
+
+    public void setDel(boolean del) {
+        isDel = del;
+    }
+
+    public boolean getIsDel() {
+        return this.isDel;
+    }
+
+    public void setIsDel(boolean isDel) {
+        this.isDel = isDel;
     }
 }

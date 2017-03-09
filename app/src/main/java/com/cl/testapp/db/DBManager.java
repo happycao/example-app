@@ -31,7 +31,7 @@ public class DBManager {
     public static DBManager getInstance(Context context) {
         if(mInstance == null){
             synchronized (DBManager.class){
-                mInstance = new DBManager(context);
+                if (mInstance == null) mInstance = new DBManager(context);
             }
         }
         return mInstance;
@@ -65,5 +65,10 @@ public class DBManager {
     public List<User> getUserList(){
         UserDao userDao = mDaoSession.getUserDao();
         return userDao.queryBuilder().build().list();
+    }
+
+    public void updateUser(User user){
+        UserDao userDao = mDaoSession.getUserDao();
+        userDao.update(user);
     }
 }

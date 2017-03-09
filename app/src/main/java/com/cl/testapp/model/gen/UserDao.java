@@ -29,6 +29,7 @@ public class UserDao extends AbstractDao<User, Long> {
         public final static Property Age = new Property(2, int.class, "age", false, "AGE");
         public final static Property Sex = new Property(3, int.class, "sex", false, "SEX");
         public final static Property Info = new Property(4, String.class, "info", false, "INFO");
+        public final static Property IsDel = new Property(5, boolean.class, "isDel", false, "IS_DEL");
     }
 
 
@@ -48,7 +49,8 @@ public class UserDao extends AbstractDao<User, Long> {
                 "\"NAME\" TEXT," + // 1: name
                 "\"AGE\" INTEGER NOT NULL ," + // 2: age
                 "\"SEX\" INTEGER NOT NULL ," + // 3: sex
-                "\"INFO\" TEXT);"); // 4: info
+                "\"INFO\" TEXT," + // 4: info
+                "\"IS_DEL\" INTEGER NOT NULL );"); // 5: isDel
     }
 
     /** Drops the underlying database table. */
@@ -77,6 +79,7 @@ public class UserDao extends AbstractDao<User, Long> {
         if (info != null) {
             stmt.bindString(5, info);
         }
+        stmt.bindLong(6, entity.getIsDel() ? 1L: 0L);
     }
 
     @Override
@@ -99,6 +102,7 @@ public class UserDao extends AbstractDao<User, Long> {
         if (info != null) {
             stmt.bindString(5, info);
         }
+        stmt.bindLong(6, entity.getIsDel() ? 1L: 0L);
     }
 
     @Override
@@ -113,7 +117,8 @@ public class UserDao extends AbstractDao<User, Long> {
             cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1), // name
             cursor.getInt(offset + 2), // age
             cursor.getInt(offset + 3), // sex
-            cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4) // info
+            cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4), // info
+            cursor.getShort(offset + 5) != 0 // isDel
         );
         return entity;
     }
@@ -125,6 +130,7 @@ public class UserDao extends AbstractDao<User, Long> {
         entity.setAge(cursor.getInt(offset + 2));
         entity.setSex(cursor.getInt(offset + 3));
         entity.setInfo(cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4));
+        entity.setIsDel(cursor.getShort(offset + 5) != 0);
      }
     
     @Override

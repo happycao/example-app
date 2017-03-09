@@ -5,12 +5,16 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.LinearSnapHelper;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.LinearLayout;
 
 import com.cl.testapp.R;
 import com.cl.testapp.ui.adapter.CheckboxAdapter;
 import com.cl.testapp.ui.base.BaseActivity;
+import com.cl.testapp.util.Util;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,6 +22,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnCheckedChanged;
+import butterknife.OnClick;
 
 
 /**
@@ -27,12 +32,17 @@ public class CheckBoxActivity extends BaseActivity {
 
     private static final String TAG = "CheckBoxActivity";
 
-    @BindView(R.id.checkbox)
-    CheckBox mCheckbox;
-    @BindView(R.id.recycler_view)
-    RecyclerView mRecyclerView;
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
+    @BindView(R.id.recycler_view)
+    RecyclerView mRecyclerView;
+    @BindView(R.id.checkbox)
+    CheckBox mCheckbox;
+    @BindView(R.id.btn_del)
+    Button mBtnDel;
+    @BindView(R.id.edit_layout)
+    LinearLayout mEditLayout;
+
     private CheckboxAdapter adapter;
     private List<String> data = new ArrayList<>();
     private boolean isClick = false;
@@ -43,8 +53,34 @@ public class CheckBoxActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_check_box);
         ButterKnife.bind(this);
-        setToolbar(mToolbar, "CHECKBOX选择操作", true);
+        initToolBar();
         setRecyclerView();
+    }
+
+    private void initToolBar() {
+        mEditLayout.setVisibility(View.GONE);
+        setToolbar(mToolbar, "CHECKBOX选择操作", true);
+        mToolbar.inflateMenu(R.menu.menu_edit);
+        mToolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.action_edit:
+                        if (item.getTitle().equals("完成")) {
+                            item.setTitle("编辑");
+                            mEditLayout.setVisibility(View.GONE);
+                            adapter.notifyDataSetChanged();
+                        } else {
+                            item.setTitle("完成");
+                            mEditLayout.setVisibility(View.VISIBLE);
+                            adapter.notifyDataSetChanged();
+                        }
+                        adapter.setEdit(!adapter.getEditStatus());
+                        break;
+                }
+                return false;
+            }
+        });
     }
 
     private void setRecyclerView() {
@@ -58,6 +94,11 @@ public class CheckBoxActivity extends BaseActivity {
         adapter.setOnItemClickListener(new CheckboxAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
+                Util.toastShow(view.getContext(), data.get(position));
+            }
+
+            @Override
+            public void onEditItemClick(View view, int position) {
                 boolean[] check = adapter.getCheckAll();
                 isClick = true;
                 num = 0;
@@ -82,6 +123,7 @@ public class CheckBoxActivity extends BaseActivity {
 
     @OnCheckedChanged(R.id.checkbox)
     public void onCheckedChanged(boolean isChecked) {
+        if (!adapter.getEditStatus()) return;
         boolean[] check = new boolean[data.size()];
         int a = 0;
         for (int i = 0; i < data.size(); i++) {
@@ -99,5 +141,10 @@ public class CheckBoxActivity extends BaseActivity {
             }
             mCheckbox.setText(String.valueOf(num));
         }
+    }
+
+    @OnClick(R.id.btn_del)
+    public void onClick(View view) {
+
     }
 }

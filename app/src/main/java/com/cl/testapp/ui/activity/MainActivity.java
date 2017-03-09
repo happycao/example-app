@@ -22,6 +22,7 @@ import com.bumptech.glide.request.target.SimpleTarget;
 import com.cl.testapp.R;
 import com.cl.testapp.model.GoBean;
 import com.cl.testapp.mvc.UserActivity;
+import com.cl.testapp.mvp.MVPActivity;
 import com.cl.testapp.ui.adapter.WaterfallAdapter;
 import com.cl.testapp.ui.base.BaseActivity;
 import com.cl.testapp.util.Shares;
@@ -67,7 +68,8 @@ public class MainActivity extends BaseActivity {
                     case R.id.action_login:
                         startActivity(new Intent(MainActivity.this, LoginActivity.class));
                         break;
-                    case R.id.action_search:
+                    case R.id.action_share:
+                        Shares.share(MainActivity.this, "http://ww4.sinaimg.cn/large/610dc034jw1f8xz7ip2u5j20u011h78h.jpg");
                         break;
                 }
                 return false;
@@ -106,22 +108,26 @@ public class MainActivity extends BaseActivity {
         mGoList.add(new GoBean("CheckBox选择演示"
                 , "http://ww4.sinaimg.cn/large/610dc034jw1f8lox7c1pbj20u011h12x.jpg"
                 , CheckBoxActivity.class));
-        mGoList.add(new GoBean("WebView播放视频"
+        mGoList.add(new GoBean("WebView视频与交互"
                 , "http://ww1.sinaimg.cn/large/610dc034jw1f8kmud15q1j20u011hdjg.jpg"
                 , WebVideoActivity.class));
         mGoList.add(new GoBean("波纹扩散与Bottom sheet"
                 , "http://ww4.sinaimg.cn/large/610dc034jw1f8xz7ip2u5j20u011h78h.jpg"
                 , ShapeRippleActivity.class));
-        mGoList.add(new GoBean("系统分享"
-                , "http://ww1.sinaimg.cn/large/610dc034jw1f8xff48zauj20u00x5jws.jpg"
-                , null));
         mGoList.add(new GoBean("支付宝微信支付"
                 , "http://ww2.sinaimg.cn/large/610dc034jw1f8o2ov8xi0j20u00u0q61.jpg"
                 , PayActivity.class));
         mGoList.add(new GoBean("MVC简单样例"
-                , "http://ww1.sinaimg.cn/large/610dc034jw1f8kmud15q1j20u011hdjg.jpg"
+                , "http://ww4.sinaimg.cn/large/610dc034jw1f95hzq3p4rj20u011htbm.jpg"
                 , UserActivity.class));
-        mRcList.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
+        mGoList.add(new GoBean("MVP简单样例"
+                , "http://ww1.sinaimg.cn/large/610dc034jw1f8xff48zauj20u00x5jws.jpg"
+                , MVPActivity.class));
+        mGoList.add(new GoBean("Animate"
+                , "http://ww4.sinaimg.cn/large/610dc034jw1f8bc5c5n4nj20u00irgn8.jpg"
+                , AnimateActivity.class));
+
+        mRcList.setLayoutManager(new StaggeredGridLayoutManager(3, StaggeredGridLayoutManager.VERTICAL));
         mAdapter = new WaterfallAdapter(this, mGoList);
         mRcList.setAdapter(mAdapter);
     }
@@ -132,22 +138,18 @@ public class MainActivity extends BaseActivity {
             @Override
             public void onItemClick(View view, int position) {
                 GoBean goBean = mGoList.get(position);
-                if (goBean.getCls() == null) {
-                    Shares.share(MainActivity.this, mGoList.get(position).getImgUrl());
-                }else {
-                    if (goBean.getCls().equals(AnimateActivity.class)) {
-                        Intent animateIntent = new Intent(MainActivity.this, AnimateActivity.class);
-                        Bundle bundle = new Bundle();
-                        bundle.putString("animate", mGoList.get(position).getImgUrl());
-                        animateIntent.putExtras(bundle);
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                            startActivity(animateIntent, ActivityOptions.makeSceneTransitionAnimation(MainActivity.this, view, "animate").toBundle());
-                        } else {
-                            startActivity(animateIntent);
-                        }
+                if (goBean.getCls().equals(AnimateActivity.class)) {
+                    Intent animateIntent = new Intent(MainActivity.this, AnimateActivity.class);
+                    Bundle bundle = new Bundle();
+                    bundle.putString("animate", mGoList.get(position).getImgUrl());
+                    animateIntent.putExtras(bundle);
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                        startActivity(animateIntent, ActivityOptions.makeSceneTransitionAnimation(MainActivity.this, view, "animate").toBundle());
                     } else {
-                        startActivity(new Intent(MainActivity.this, goBean.getCls()));
+                        startActivity(animateIntent);
                     }
+                } else {
+                    startActivity(new Intent(MainActivity.this, goBean.getCls()));
                 }
             }
 
