@@ -2,6 +2,7 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -15,13 +16,29 @@
         android:layout_height="0dp"
         android:layout_weight="1"/>
 
-    <CheckBox
-        android:id="@+id/checkbox"
+    <LinearLayout
+        android:id="@+id/edit_layout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:padding="10dp"
-        android:background="#e8e8e8"
-        android:text="全选"/>
+        android:layout_height="40dp"
+        android:orientation="horizontal">
+
+        <CheckBox
+            android:id="@+id/checkbox"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:padding="10dp"
+            android:background="#e8e8e8"
+            android:text="全选"/>
+
+        <Button
+            android:id="@+id/btn_del"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="删除"
+            android:textColor="@color/c"
+            android:background="@color/colorPrimary"/>
+    </LinearLayout>
 
 </LinearLayout>

@@ -71,7 +71,7 @@ public class WaterfallAdapter extends RecyclerView.Adapter<WaterfallAdapter.MyVi
                     public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
                         //拿到Bitmap，设置ImageView宽高
                         int screenWidth = getScreenWidth(mContext);
-                        int width = (screenWidth - Util.dip2px(mContext, 24)) / 2;
+                        int width = (screenWidth - Util.dip2px(mContext, 32)) / 3;
                         int height = width * resource.getHeight() / resource.getWidth();
                         ViewGroup.LayoutParams lp = holder.mImgItem.getLayoutParams();
                         lp.width = width;

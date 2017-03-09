@@ -22,11 +22,14 @@ import butterknife.ButterKnife;
 public class CheckboxAdapter extends RecyclerView.Adapter<CheckboxAdapter.MyViewHolder> {
 
     private List<String> mDatas;
-    private boolean[] mCheckbox;
+    private boolean[] mChecks;
     private Context mContext;
+
+    private boolean mIsEdit;
 
     public interface OnItemClickListener {
         void onItemClick(View view, int position);
+        void onEditItemClick(View view, int position);
     }
 
     private OnItemClickListener mOnItemClickListener;
@@ -38,7 +41,7 @@ public class CheckboxAdapter extends RecyclerView.Adapter<CheckboxAdapter.MyView
     public CheckboxAdapter(Context context, List<String> mDatas) {
         this.mContext = context;
         this.mDatas = mDatas;
-        this.mCheckbox = new boolean[mDatas.size()];
+        this.mChecks = new boolean[mDatas.size()];
     }
 
     @Override
@@ -48,24 +51,9 @@ public class CheckboxAdapter extends RecyclerView.Adapter<CheckboxAdapter.MyView
 
     @Override
     public void onBindViewHolder(final MyViewHolder holder, final int position) {
-        holder.mTvName.setText(mDatas.get(position));
-        holder.mCheckbox.setChecked(mCheckbox[position]);
-        holder.card.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                int pos = holder.getLayoutPosition();
-                if (holder.mCheckbox.isChecked()) {
-                    holder.mCheckbox.setChecked(false);
-                    mCheckbox[position] = false;
-                } else {
-                    holder.mCheckbox.setChecked(true);
-                    mCheckbox[position] = true;
-                }
-                if (mOnItemClickListener != null) {
-                    mOnItemClickListener.onItemClick(holder.itemView, pos);
-                }
-            }
-        });
+        holder.bindItem(mDatas.get(position), mIsEdit);
+
+
     }
 
     @Override
@@ -73,14 +61,23 @@ public class CheckboxAdapter extends RecyclerView.Adapter<CheckboxAdapter.MyView
         return mDatas.size();
     }
 
+    public void setEdit(boolean isEdit){
+        this.mIsEdit = isEdit;
+        notifyDataSetChanged();
+    }
+
+    public boolean getEditStatus(){
+        return mIsEdit;
+    }
+
     public void setCheckAll(boolean[] checkbox) {
-        mCheckbox = checkbox;
+        mChecks = checkbox;
         notifyDataSetChanged();
     }
 
 
     public boolean[] getCheckAll() {
-        return mCheckbox;
+        return mChecks;
     }
 
     class MyViewHolder extends RecyclerView.ViewHolder {
@@ -89,13 +86,44 @@ public class CheckboxAdapter extends RecyclerView.Adapter<CheckboxAdapter.MyView
         CheckBox mCheckbox;
         @BindView(R.id.tv_name)
         TextView mTvName;
-        View card;
 
-        public MyViewHolder(View view) {
-            super(view);
-            ButterKnife.bind(this, view);
-            card = view;
+        public MyViewHolder(View itemView) {
+            super(itemView);
+            ButterKnife.bind(this, itemView);
+        }
 
+        void bindItem(String str, boolean isEdit){
+            final int position = getLayoutPosition();
+            mTvName.setText(str);
+            if (isEdit) {
+                mCheckbox.setVisibility(View.VISIBLE);
+                mCheckbox.setChecked(mChecks[position]);
+                itemView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (mCheckbox.isChecked()) {
+                            mCheckbox.setChecked(false);
+                            mChecks[position] = false;
+                        } else {
+                            mCheckbox.setChecked(true);
+                            mChecks[position] = true;
+                        }
+                        if (mOnItemClickListener != null) {
+                            mOnItemClickListener.onEditItemClick(itemView, position);
+                        }
+                    }
+                });
+            } else {
+                mCheckbox.setVisibility(View.GONE);
+                itemView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (mOnItemClickListener != null) {
+                            mOnItemClickListener.onItemClick(itemView, position);
+                        }
+                    }
+                });
+            }
         }
     }
 

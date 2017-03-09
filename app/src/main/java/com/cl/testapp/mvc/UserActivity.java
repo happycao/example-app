@@ -6,10 +6,8 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 
 import com.cl.testapp.R;
-import com.cl.testapp.ui.adapter.CheckboxAdapter;
 import com.cl.testapp.ui.base.BaseActivity;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -38,11 +36,7 @@ public class UserActivity extends BaseActivity {
         mUserModel.getUsers(new onUserListener() {
             @Override
             public void onSuccess(List<UserInfo> userList) {
-                List<String> data = new ArrayList<>();
-                for (UserInfo user: userList){
-                    data.add(user.getAccount());
-                }
-                setRecyclerView(data);
+                setRecyclerView(userList);
             }
 
             @Override
@@ -52,9 +46,9 @@ public class UserActivity extends BaseActivity {
         });
     }
 
-    public void setRecyclerView(List<String> data) {
+    public void setRecyclerView(List<UserInfo> userList) {
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
-        CheckboxAdapter adapter = new CheckboxAdapter(this, data);
+        UserAdapter adapter = new UserAdapter(this, userList);
         mRecyclerView.setAdapter(adapter);
     }
 }

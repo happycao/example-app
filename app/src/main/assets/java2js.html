@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta http-equiv="Content-Type"  content="text/html;charset=UTF-8">
+		<title>js2java</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+		<style>
+			* {
+				margin: 0;
+				padding: 0;
+			}
+			body{
+				text-align: center;
+			}
+			a,
+			button {
+				margin: 20px auto;
+				padding: 10px 50px;
+				background: royalblue;
+				color: white;
+    			border-radius: 6px;
+			}
+			p{
+				text-align: center;
+			}
+		</style>
+		<script  type="text/javascript">
+			function javaCallJs(message) {
+				document.getElementById("info").innerHTML= message;
+			};
+
+			function getGreetings(message){
+				document.getElementById("info").innerHTML= message;
+				return message;
+			};
+		</script>
+	</head>
+
+	<body>
+		<button type="button" onClick="javascript:main.jsCallJava('Message From Js')">js2java</button>
+		<p id="info">等待赋值</p>
+		<br/>
+		<a type="button" onclick="javascript:main.jsCallJava('Message From Js')">js2j</a>
+	</body>
+
+</html>

@@ -2,8 +2,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/bg_item"
-                android:layout_margin="@dimen/card_margin">
+                android:layout_margin="@dimen/card_margin"
+                android:background="@drawable/bg_item">
 
     <ImageView
         android:id="@+id/img_item"
@@ -11,12 +11,13 @@
         android:layout_height="wrap_content"
         android:adjustViewBounds="true"
         android:scaleType="fitCenter"/>
+
     <LinearLayout
-        android:layout_below="@+id/img_item"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="5dp"
-        android:orientation="horizontal">
+        android:layout_below="@+id/img_item"
+        android:orientation="horizontal"
+        android:padding="5dp">
 
         <TextView
             android:id="@+id/tv_name"

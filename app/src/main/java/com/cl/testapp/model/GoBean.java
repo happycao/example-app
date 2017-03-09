@@ -1,7 +1,7 @@
 package com.cl.testapp.model;
 
 /**
- * 首页挑战
+ * 首页跳转
  * Created by Administrator on 2017-02-24.
  */
 
