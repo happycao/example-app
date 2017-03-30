@@ -9,14 +9,13 @@ public class GoBean {
 
     private String title;
     private String imgUrl;
+    private Class<?> cls;
 
     public GoBean(String title, String imgUrl, Class<?> cls) {
         this.title = title;
         this.imgUrl = imgUrl;
         this.cls = cls;
     }
-
-    private Class<?> cls;
 
     public String getTitle() {
         return title;

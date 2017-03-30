@@ -11,7 +11,7 @@ import java.util.List;
 import okhttp3.Call;
 
 /**
- *
+ * 方法实现
  * Created by Administrator on 2017-02-27.
  */
 
