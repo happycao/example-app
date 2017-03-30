@@ -43,7 +43,7 @@ public class WebVideoActivity extends BaseActivity {
 //        mWebVideo.loadUrl("http://www.bilibili.com/video/av7449411/");
         mWebVideo.loadUrl("file:///android_asset/java2js.html");
 //        mWebVideo.loadUrl("http://192.168.10.120:8020/H5android/index.html");
-        mWebVideo.addJavascriptInterface(WebVideoActivity.this, "myObj");
+        mWebVideo.addJavascriptInterface(WebVideoActivity.this, "training");
         mWebVideo.addJavascriptInterface(WebVideoActivity.this, "main");
 
     }
@@ -52,7 +52,8 @@ public class WebVideoActivity extends BaseActivity {
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.btn_load_bili:
-                mWebVideo.loadUrl("http://www.bilibili.com/video/av7449411/");
+//                mWebVideo.loadUrl("http://www.bilibili.com/video/av7449411/");
+                mWebVideo.loadUrl("http://keepapp.yamon.com.cn/FitnessApp/index.html");
                 break;
             case R.id.btn_load_j2js:
                 mWebVideo.loadUrl("file:///android_asset/java2js.html");
@@ -79,8 +80,8 @@ public class WebVideoActivity extends BaseActivity {
 
 
     @JavascriptInterface
-    public void callJavaMethod(String message) {
-        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+    public void callJavaMethod() {
+        Toast.makeText(this, "训练历史", Toast.LENGTH_SHORT).show();
     }
 
     @Override

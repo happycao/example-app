@@ -5,6 +5,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
 import com.cl.testapp.ui.fragment.PlaceholderFragment;
+import com.cl.testapp.ui.fragment.WebViewFragment;
 
 /**
  * 垂直ViewPagerAdapter
@@ -19,7 +20,8 @@ public class DummyAdapter extends FragmentPagerAdapter {
 
     @Override
     public Fragment getItem(int position) {
-        return PlaceholderFragment.newInstance(position + 1);
+        if(position == 2) return WebViewFragment.newInstance();
+        else return PlaceholderFragment.newInstance(position + 1);
     }
 
     @Override

@@ -33,7 +33,7 @@ public class UserActivity extends BaseActivity {
     private void init() {
         setToolbar(mToolbar, "MVC样例", true);
         mUserModel = new UserModelImpl();
-        mUserModel.getUsers(new onUserListener() {
+        mUserModel.getUsers(new UserModel.onUserListener() {
             @Override
             public void onSuccess(List<UserInfo> userList) {
                 setRecyclerView(userList);
