@@ -29,6 +29,13 @@ import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+import retrofit2.http.GET;
+import retrofit2.http.Query;
 import rx.functions.Action1;
 
 /**
@@ -97,7 +104,6 @@ public class IconActivity extends BaseActivity {
                         //这里有context的问题，http://stackoverflow.com/questions/31677552/the-activitys-layoutinflater-already-has-a-factory-installed-so-we-can-not-inst
                         if(builder == null) {
                             builder = new AreaSelectDialog.Builder(IconActivity.this)
-                                    .setSelectedArea(mProvince, mCity, mRegion)
                                     .setOnSelectListener(new AreaSelectDialog.Builder.OnSelectListener() {
                                         @Override
                                         public void OnSelect(String province, String city, String region) {
@@ -108,11 +114,45 @@ public class IconActivity extends BaseActivity {
                                         }
                                     });
                         }
-                        if (!builder.isShowing()) {
-                            builder.show();
-                        }
+                        builder.setSelectedArea(mProvince, mCity, mRegion).show();
                     }
                 });
+    }
+
+
+
+    private void getMovie(){
+        String baseUrl = "https://api.douban.com/v2/movie/";
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(baseUrl)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        MovieService movieService = retrofit.create(MovieService.class);
+        Call<MovieEntity> call = movieService.getTopMovie(0, 10);
+        call.enqueue(new Callback<MovieEntity>() {
+
+            @Override
+            public void onResponse(Call<MovieEntity> call, Response<MovieEntity> response) {
+                mTvDrColor.setText(response.body().toString());
+            }
+
+            @Override
+            public void onFailure(Call<MovieEntity> call, Throwable t) {
+                mTvDrColor.setText(t.getMessage());
+            }
+        });
+    }
+
+    class MovieEntity{
+
+    }
+
+    interface MovieService {
+
+        @GET("top250")
+        Call<MovieEntity> getTopMovie(@Query("start") int start, @Query("count") int count);
     }
 
 }

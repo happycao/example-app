@@ -1,6 +1,8 @@
 package com.cl.testapp.widget.areaselect;
 
 import android.content.Context;
+import android.graphics.Point;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.StyleRes;
 import android.support.design.widget.BottomSheetBehavior;
@@ -11,6 +13,8 @@ import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.ImageView;
 
 import com.cl.testapp.R;
@@ -26,13 +30,15 @@ import java.util.List;
 /**
  * 地区选择
  * 相关资源如下
- * {@link src.main:assets/area.json},{@link src.main:layout.dialog_area_select}
- * {@link src.main:layout.item_area},{@link src.main:drawable.ic_vector_close}
- * {@link src.main:drawable.ic_vector_select},{@link Area},{@link AreaAdapter}
+ * {@link assets/area.json},{@link layout/dialog_area_select.xml}
+ * {@link layout/item_area.xml},{@link drawable/ic_vector_close.xml}
+ * {@link drawable/ic_vector_select.xml},{@link Area},{@link AreaAdapter}
  * Created by cl on 2016-12-20.
  */
 
 public class AreaSelectDialog extends BottomSheetDialog {
+
+    private BottomSheetBehavior bottomSheetBehavior;
 
     public AreaSelectDialog(@NonNull Context context) {
         super(context);
@@ -44,6 +50,36 @@ public class AreaSelectDialog extends BottomSheetDialog {
 
     protected AreaSelectDialog(@NonNull Context context, boolean cancelable, OnCancelListener cancelListener) {
         super(context, cancelable, cancelListener);
+    }
+
+    @Override
+    public void setContentView(View view) {
+        super.setContentView(view);
+        /**
+         * 监听解决hidden未dismiss的问题
+         */
+        bottomSheetBehavior = BottomSheetBehavior.from((View) view.getParent());
+        bottomSheetBehavior.setBottomSheetCallback(mBottomSheetCallback);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        int screenHeight = getScreenHeight(getContext());
+        getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, screenHeight);
+    }
+
+    private int getScreenHeight(Context context) {
+        Point point = new Point();
+        WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+        wm.getDefaultDisplay().getSize(point);
+        return point.y;
     }
 
     public static class Builder {
@@ -72,7 +108,7 @@ public class AreaSelectDialog extends BottomSheetDialog {
 
         private OnSelectListener mOnSelectListener;
 
-        public interface OnSelectListener{
+        public interface OnSelectListener {
             void OnSelect(String province, String city, String region);
         }
 
@@ -95,6 +131,7 @@ public class AreaSelectDialog extends BottomSheetDialog {
 
         /**
          * 创建视图
+         *
          * @return AreaSelectDialog
          */
         public AreaSelectDialog create() {
@@ -126,7 +163,7 @@ public class AreaSelectDialog extends BottomSheetDialog {
             mTabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
                 @Override
                 public void onTabSelected(TabLayout.Tab tab) {
-                    switch (tab.getPosition()){
+                    switch (tab.getPosition()) {
                         case 0:
                             setProvince();
                             break;
@@ -156,7 +193,7 @@ public class AreaSelectDialog extends BottomSheetDialog {
          */
         private void setProvince() {
             provinceList.clear();
-            for (Area area: areaList) {
+            for (Area area : areaList) {
                 provinceList.add(area.getName());
             }
             //此处删除待选中的"请选择"
@@ -164,7 +201,7 @@ public class AreaSelectDialog extends BottomSheetDialog {
             final AreaAdapter provinceAdapter = new AreaAdapter(mContext, provinceList);
             mRecyclerView.setAdapter(provinceAdapter);
             //这里-1是原始数据并没有remove"请选择"
-            if(mProvincePosition != -1) {
+            if (mProvincePosition != -1) {
                 provinceAdapter.setSelectPosition(mProvincePosition - 1);
                 mRecyclerView.scrollToPosition(mProvincePosition - 1);
             }
@@ -175,19 +212,20 @@ public class AreaSelectDialog extends BottomSheetDialog {
                     //这里判断点击的和选中的是否是同一个，如果是tab只改变选中状态，否则移除并清除状态重新加载
                     if (mProvincePosition == position + 1) {
                         if (mTabLayout.getTabCount() == 2) mTabLayout.getTabAt(1).select();
-                    }else {
+                    } else {
                         mProvincePosition = position + 1;
                         mCityPosition = -1;
                         mRegionPosition = -1;
                         mProvince = areaList.get(mProvincePosition).getName();
                         //如果有没有下级，直接返回数据，有则改变状态
-                        if (cityList == null || cityList.size() == 0){
+                        if (cityList == null || cityList.size() == 0) {
                             mProvince = areaList.get(mProvincePosition).getName();
                             mTabLayout.getTabAt(0).setText(mProvince);
                             provinceAdapter.setSelectPosition(mCityPosition - 1);
-                            if (mOnSelectListener != null) mOnSelectListener.OnSelect(mProvince, "", "");
+                            if (mOnSelectListener != null)
+                                mOnSelectListener.OnSelect(mProvince, "", "");
                             dismiss();
-                        }else {
+                        } else {
                             mTabLayout.removeAllTabs();
                             mTabLayout.addTab(mTabLayout.newTab().setText(mProvince));
                             mTabLayout.addTab(mTabLayout.newTab().setText(areaList.get(mProvincePosition).getSub().get(0).getName()));
@@ -200,12 +238,13 @@ public class AreaSelectDialog extends BottomSheetDialog {
 
         /**
          * 设置待选市/区/县
+         *
          * @param position 上级位置
          */
-        private void setCity(int position){
+        private void setCity(int position) {
             mSubBeanXs = areaList.get(position).getSub();
             cityList.clear();
-            for (Area.SubBeanX city: mSubBeanXs) {
+            for (Area.SubBeanX city : mSubBeanXs) {
                 cityList.add(city.getName());
             }
             //此处删除待选中的"请选择"
@@ -213,7 +252,7 @@ public class AreaSelectDialog extends BottomSheetDialog {
             final AreaAdapter cityAdapter = new AreaAdapter(mContext, cityList);
             mRecyclerView.setAdapter(cityAdapter);
             //这里-1是原始数据并没有remove"请选择"
-            if(mCityPosition != -1) {
+            if (mCityPosition != -1) {
                 cityAdapter.setSelectPosition(mCityPosition - 1);
                 mRecyclerView.scrollToPosition(mCityPosition - 1);
             }
@@ -227,9 +266,10 @@ public class AreaSelectDialog extends BottomSheetDialog {
                     if (regions == null || regions.size() == 0) {
                         mTabLayout.getTabAt(1).setText(mCity);
                         cityAdapter.setSelectPosition(mCityPosition - 1);
-                        if (mOnSelectListener != null) mOnSelectListener.OnSelect(mProvince, mCity, "");
+                        if (mOnSelectListener != null)
+                            mOnSelectListener.OnSelect(mProvince, mCity, "");
                         dismiss();
-                    }else {
+                    } else {
                         mRegionPosition = -1;
                         mTabLayout.removeAllTabs();
                         mTabLayout.addTab(mTabLayout.newTab().setText(mProvince));
@@ -243,12 +283,13 @@ public class AreaSelectDialog extends BottomSheetDialog {
 
         /**
          * 设置待选区/县
+         *
          * @param position 上级位置
          */
         private void setRegion(int position) {
             mSubBeans = mSubBeanXs.get(position).getSub();
             regionList.clear();
-            for (Area.SubBeanX.SubBean region: mSubBeans) {
+            for (Area.SubBeanX.SubBean region : mSubBeans) {
                 regionList.add(region.getName());
             }
             //此处删除待选中的"请选择"
@@ -256,9 +297,9 @@ public class AreaSelectDialog extends BottomSheetDialog {
             final AreaAdapter regionAdapter = new AreaAdapter(mContext, regionList);
             mRecyclerView.setAdapter(regionAdapter);
             //这里-1是原始数据并没有remove"请选择"
-            if(mRegionPosition != -1) {
-                regionAdapter.setSelectPosition(mRegionPosition -1);
-                mRecyclerView.scrollToPosition(mRegionPosition -1);
+            if (mRegionPosition != -1) {
+                regionAdapter.setSelectPosition(mRegionPosition - 1);
+                mRecyclerView.scrollToPosition(mRegionPosition - 1);
             }
             regionAdapter.setOnItemClickListener(new AreaAdapter.OnItemClickListener() {
                 @Override
@@ -268,7 +309,8 @@ public class AreaSelectDialog extends BottomSheetDialog {
                     regionAdapter.setSelectPosition(mRegionPosition);
                     //和上面逻辑不一样，确定有三个tab，所以直接修改值
                     mTabLayout.getTabAt(2).setText(mRegion);
-                    if (mOnSelectListener != null) mOnSelectListener.OnSelect(mProvince, mCity, mRegion);
+                    if (mOnSelectListener != null)
+                        mOnSelectListener.OnSelect(mProvince, mCity, mRegion);
                     dismiss();
                 }
             });
@@ -276,16 +318,17 @@ public class AreaSelectDialog extends BottomSheetDialog {
 
         /**
          * 设置已选地区
+         *
          * @param province 省/市
-         * @param city 市/区/县
-         * @param region 区/县
+         * @param city     市/区/县
+         * @param region   区/县
          * @return Builder
          */
         public Builder setSelectedArea(@NonNull String province, @NonNull String city, @NonNull String region) {
             if (province.equals("")) return this;
             mTabLayout.removeAllTabs();
             for (int i = 0; i < areaList.size(); i++) {
-                if(TextUtils.equals(areaList.get(i).getName(), province)){
+                if (TextUtils.equals(areaList.get(i).getName(), province)) {
                     mProvincePosition = i;
                     mProvince = province;
                     mTabLayout.addTab(mTabLayout.newTab().setText(province));
@@ -294,7 +337,7 @@ public class AreaSelectDialog extends BottomSheetDialog {
             }
             if (city.equals("")) return this;
             List<Area.SubBeanX> cityList = areaList.get(mProvincePosition).getSub();
-            if(cityList != null || cityList.size() > 0) {
+            if (cityList != null || cityList.size() > 0) {
                 for (int i = 0; i < cityList.size(); i++) {
                     if (TextUtils.equals(cityList.get(i).getName(), city)) {
                         mCityPosition = i;
@@ -306,9 +349,9 @@ public class AreaSelectDialog extends BottomSheetDialog {
             }
             if (region.equals("")) return this;
             List<Area.SubBeanX.SubBean> regionList = cityList.get(mCityPosition).getSub();
-            if (regionList != null || regionList.size() > 0){
+            if (regionList != null || regionList.size() > 0) {
                 for (int i = 0; i < regionList.size(); i++) {
-                    if (TextUtils.equals(regionList.get(i).getName(), region)){
+                    if (TextUtils.equals(regionList.get(i).getName(), region)) {
                         mRegionPosition = i;
                         mRegion = region;
                         mTabLayout.addTab(mTabLayout.newTab().setText(region));
@@ -321,44 +364,40 @@ public class AreaSelectDialog extends BottomSheetDialog {
 
         /**
          * 是否可以被取消{true or false}
+         *
          * @return Builder
          */
-        public Builder setCancelable(boolean cancelable){
+        public Builder setCancelable(boolean cancelable) {
             mDialog.setCancelable(cancelable);
             return this;
         }
 
         /**
-         * 是否已经显示
-         * @return boolean
-         */
-        public boolean isShowing(){
-            return mDialog.isShowing();
-        }
-
-        /**
          * 显示
+         *
          * @return Builder
          */
-        public Builder show(){
-            if(!mDialog.isShowing()) mDialog.show();
+        public Builder show() {
+            if (!mDialog.isShowing()) mDialog.show();
             return this;
         }
 
         /**
          * 隐藏
+         *
          * @return Builder
          */
-        public Builder dismiss(){
+        public Builder dismiss() {
             mDialog.dismiss();
             return this;
         }
 
         /**
          * 获取地区数据
+         *
          * @return List<Area>
          */
-        private List<Area> getAreaData(){
+        private List<Area> getAreaData() {
             List<Area> areaList = new ArrayList<>();
             try {
                 InputStream input = mContext.getAssets().open("area.json");
@@ -373,6 +412,7 @@ public class AreaSelectDialog extends BottomSheetDialog {
 
         /**
          * InputStream转String
+         *
          * @param is InputStream
          * @return String
          * @throws IOException
@@ -389,7 +429,7 @@ public class AreaSelectDialog extends BottomSheetDialog {
     }
 
     /**
-     * BottomSheet监听，暂无卵用
+     * BottomSheet监听
      */
     private BottomSheetBehavior.BottomSheetCallback mBottomSheetCallback = new BottomSheetBehavior.BottomSheetCallback() {
         @Override
@@ -399,8 +439,10 @@ public class AreaSelectDialog extends BottomSheetDialog {
             //收起 BottomSheetBehavior.STATE_COLLAPSED
             //拖动 BottomSheetBehavior.STATE_DRAGGING
             //下滑 BottomSheetBehavior.STATE_SETTLING
-            if (newState == BottomSheetBehavior.STATE_HIDDEN) {
-                dismiss();
+            switch (newState) {
+                case BottomSheetBehavior.STATE_HIDDEN:
+                    dismiss();
+                    break;
             }
         }
 

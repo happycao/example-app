@@ -87,12 +87,6 @@ public class WaterfallAdapter extends RecyclerView.Adapter<WaterfallAdapter.MyVi
                 });
 
         holder.mTvName.setText(mData.get(position).getTitle());
-        holder.mTvName.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Util.toastShow(mContext, ((TextView) view).getText().toString());
-            }
-        });
     }
 
     @Override
