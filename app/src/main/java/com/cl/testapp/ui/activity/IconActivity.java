@@ -7,8 +7,14 @@ import android.os.Bundle;
 import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v4.view.LayoutInflaterCompat;
 import android.support.v7.widget.Toolbar;
+import android.text.SpannableString;
+import android.text.Spanned;
 import android.text.format.DateFormat;
-import android.text.format.DateUtils;
+import android.text.method.LinkMovementMethod;
+import android.text.style.ClickableSpan;
+import android.text.style.ForegroundColorSpan;
+import android.text.style.ImageSpan;
+import android.text.style.URLSpan;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
@@ -29,13 +35,6 @@ import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
-import retrofit2.http.GET;
-import retrofit2.http.Query;
 import rx.functions.Action1;
 
 /**
@@ -71,29 +70,43 @@ public class IconActivity extends BaseActivity {
         DrawableCompat.setTintList(drawable, ColorStateList.valueOf(getResources().getColor(R.color.colorPrimary)));
         drawable.setBounds(0, 0, Util.dip2px(this, 24), Util.dip2px(this, 24));//边距，长宽
         mTvDrColor.setCompoundDrawables(drawable, null, null, null);
-        String date = DateUtils.formatDateTime(this, System.currentTimeMillis(), DateUtils.FORMAT_SHOW_WEEKDAY);
-        mTvDrColor.setText(date);
-        mTvDrColor.setOnTouchListener(new View.OnTouchListener() {
+
+        // SpannableString
+        // 文本颜色
+        String str = "#话题# 我的表情是这样的 ::like @你好，明天  查看链接>> ";
+        SpannableString spannableString = new SpannableString(str);
+        ForegroundColorSpan colorSpan = new ForegroundColorSpan(Color.parseColor("#0099EE"));
+        // 话题
+        int topicStart = str.indexOf("#");
+        int topicEnd = str.indexOf("#", topicStart + 1) + 1;
+        spannableString.setSpan(colorSpan, topicStart, topicEnd, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+        // 表情
+        int imgStart = str.indexOf("::");
+        int imgEnd = str.indexOf(" ", imgStart + 1);
+        drawable.setBounds(0, 0, 42, 42);
+        ImageSpan imageSpan = new ImageSpan(drawable);
+        spannableString.setSpan(imageSpan, imgStart, imgEnd, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+
+        // 点击事件
+        int atStart = str.indexOf("@");
+        int atEnd = str.indexOf(" ", atStart + 1) + 1;
+        spannableString.setSpan(new ClickableSpan() {
             @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                switch (event.getAction()){
-                    case MotionEvent.ACTION_DOWN:
-                        IconicsDrawable icon = new IconicsDrawable(v.getContext()).icon(IconFont.Icon.xl_coffee).sizeDp(144).paddingDp(8).backgroundColor(Color.parseColor("#DDFFFFFF")).roundedCornersDp(12);
-                        ImageView imageView = new ImageView(v.getContext());
-                        imageView.setImageDrawable(icon);
-                        int size = Util.dip2px(v.getContext(), 144);
-                        popup = new PopupWindow(imageView, size, size);
-                        popup.showAsDropDown(v);
-                        break;
-                    case MotionEvent.ACTION_UP:
-                        if (popup != null && popup.isShowing()) {
-                            popup.dismiss();
-                        }
-                        break;
-                }
-                return false;
+            public void onClick(View widget) {
+                Util.toastShow(IconActivity.this, "click");
             }
-        });
+        }, atStart, atEnd, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+
+        // 超链接
+        int linkStart = str.indexOf("查看链接>>");
+        int linkEnd = str.indexOf(" ", linkStart + 1) + 1;
+        URLSpan urlSpan = new URLSpan("http://47.100.245.128");
+        spannableString.setSpan(urlSpan, linkStart, linkEnd, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+
+        mTvDrColor.setMovementMethod(LinkMovementMethod.getInstance());
+        mTvDrColor.setHighlightColor(Color.parseColor("#36969696"));
+
+        mTvDrColor.setText(spannableString);
 
         RxView.clicks(mTvAreaSelect)
                 .throttleFirst(500, TimeUnit.MILLISECONDS) // 设置防抖间隔为 500ms
@@ -119,40 +132,27 @@ public class IconActivity extends BaseActivity {
                 });
     }
 
-
-
-    private void getMovie(){
-        String baseUrl = "https://api.douban.com/v2/movie/";
-
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(baseUrl)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-
-        MovieService movieService = retrofit.create(MovieService.class);
-        Call<MovieEntity> call = movieService.getTopMovie(0, 10);
-        call.enqueue(new Callback<MovieEntity>() {
-
+    private void setOnTouch() {
+        mTvDrColor.setOnTouchListener(new View.OnTouchListener() {
             @Override
-            public void onResponse(Call<MovieEntity> call, Response<MovieEntity> response) {
-                mTvDrColor.setText(response.body().toString());
-            }
-
-            @Override
-            public void onFailure(Call<MovieEntity> call, Throwable t) {
-                mTvDrColor.setText(t.getMessage());
+            public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getAction()){
+                    case MotionEvent.ACTION_DOWN:
+                        IconicsDrawable icon = new IconicsDrawable(v.getContext()).icon(IconFont.Icon.xl_coffee).sizeDp(144).paddingDp(8).backgroundColor(Color.parseColor("#DDFFFFFF")).roundedCornersDp(12);
+                        ImageView imageView = new ImageView(v.getContext());
+                        imageView.setImageDrawable(icon);
+                        int size = Util.dip2px(v.getContext(), 144);
+                        popup = new PopupWindow(imageView, size, size);
+                        popup.showAsDropDown(v);
+                        break;
+                    case MotionEvent.ACTION_UP:
+                        if (popup != null && popup.isShowing()) {
+                            popup.dismiss();
+                        }
+                        break;
+                }
+                return false;
             }
         });
     }
-
-    class MovieEntity{
-
-    }
-
-    interface MovieService {
-
-        @GET("top250")
-        Call<MovieEntity> getTopMovie(@Query("start") int start, @Query("count") int count);
-    }
-
 }

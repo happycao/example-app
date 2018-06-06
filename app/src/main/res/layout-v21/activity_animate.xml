@@ -1,52 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context=".ui.activity.AnimateActivity">
-
-    <include layout="@layout/toolbar"/>
-
-    <ImageView
-        android:id="@+id/iv_animate"
+<FrameLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:transitionName="animate"/>
+        android:layout_height="match_parent"
+        tools:context=".ui.activity.AnimateActivity">
 
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
-        <Button
-            android:id="@+id/get_token"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="登录"/>
+        <include layout="@layout/toolbar"/>
 
-        <Button
-            android:id="@+id/get_upload_token"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="获取凭证"/>
+        <include layout="@layout/layout_edit"/>
 
-        <Button
-            android:id="@+id/upload_img"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="上传图片"/>
+        <ImageView
+                android:id="@+id/iv_animate"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:transitionName="animate"
+                android:layout_marginTop="@dimen/common_margin"/>
+
+        <TextView
+                android:id="@+id/log_info"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/common_margin"/>
     </LinearLayout>
 
-    <TextView
-        android:id="@+id/log_info"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+    <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom">
 
-    <ImageView
-        android:id="@+id/img"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:adjustViewBounds="true"/>
-</LinearLayout>
+        <include layout="@layout/layout_edit_action"/>
+
+    </RelativeLayout>
+</FrameLayout>

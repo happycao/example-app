@@ -6,14 +6,10 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.JavascriptInterface;
-import android.widget.Toast;
-
-import com.cl.testapp.R;
-import com.cl.testapp.widget.WebVideoView;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import com.cl.testapp.R;
+import com.cl.testapp.widget.WebVideoView;
 
 public class WebViewFragment extends Fragment {
 
@@ -43,13 +39,7 @@ public class WebViewFragment extends Fragment {
 
 
     private void init() {
-        mWebVideo.loadUrl("http://keepapp.yamon.com.cn/FitnessApp/index.html");
-        mWebVideo.addJavascriptInterface(WebViewFragment.this, "training");
-    }
-
-    @JavascriptInterface
-    public void callJavaMethod() {
-        Toast.makeText(getActivity(), "训练历史", Toast.LENGTH_SHORT).show();
+        mWebVideo.loadUrl("http://www.bilibili.com/video/av7449411/");
     }
 
 }

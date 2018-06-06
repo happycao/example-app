@@ -30,9 +30,9 @@ import java.util.List;
 /**
  * 地区选择
  * 相关资源如下
- * {@link assets/area.json},{@link layout/dialog_area_select.xml}
- * {@link layout/item_area.xml},{@link drawable/ic_vector_close.xml}
- * {@link drawable/ic_vector_select.xml},{@link Area},{@link AreaAdapter}
+ * {@link src.main:assets/area.json},{@link src.main:layout.dialog_area_select}
+ * {@link src.main:layout.item_area},{@link src.main:drawable.ic_vector_close}
+ * {@link src.main:drawable.ic_vector_select},{@link Area},{@link AreaAdapter}
  * Created by cl on 2016-12-20.
  */
 
@@ -419,7 +419,7 @@ public class AreaSelectDialog extends BottomSheetDialog {
          */
         private String InputStreamToString(InputStream is) throws IOException {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            int i = -1;
+            int i;
             while ((i = is.read()) != -1) {
                 baos.write(i);
             }

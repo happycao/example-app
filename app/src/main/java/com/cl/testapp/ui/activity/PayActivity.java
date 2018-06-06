@@ -11,17 +11,29 @@ import android.widget.TextView;
 
 import com.cl.testapp.R;
 import com.cl.testapp.alipay.Alipay;
+import com.cl.testapp.model.HttpResult;
 import com.cl.testapp.ui.base.BaseActivity;
 import com.cl.testapp.weixin.WXUtil;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.zhy.http.okhttp.OkHttpUtils;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
+import java.lang.reflect.Type;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 /**
  * 支付宝微信支付，微信登录
@@ -58,7 +70,7 @@ public class PayActivity extends BaseActivity {
     private void showScheme() {
         Intent intent = getIntent();
         Uri uri = intent.getData();
-        //TODO 根据不同参数可以做不同的逻辑判断
+        // TODO 根据不同参数可以做不同的逻辑判断
         if (intent.getScheme() == null) return;
         if (uri == null) return;
         Log.d(TAG, "scheme:" + intent.getScheme());
@@ -78,7 +90,7 @@ public class PayActivity extends BaseActivity {
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.alipay:
-                doAliPay();
+                doHttpAliPay();
                 break;
             case R.id.wxpay:
                 doWXPay();
@@ -90,26 +102,77 @@ public class PayActivity extends BaseActivity {
     }
 
     /**
+     * 获取服务器数据支付宝支付
+     */
+    private void doHttpAliPay() {
+        //请求自己的服务器获取支付参数
+        String url = "http://localhost/test/pay/alipayinfo";
+
+        String json = "{\"id\":\"1804162038498745\"}";
+        MediaType JSON = MediaType.parse("application/json; charset=utf-8");
+        OkHttpClient client = new OkHttpClient();
+        RequestBody body = RequestBody.create(JSON, json);
+        Request request = new Request.Builder()
+                .url(url)
+                .post(body)
+                .build();
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                Log.d(TAG, "支付信息获取失败");
+                mLogInfo.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        mLogInfo.append("支付信息获取失败\n");
+                    }
+                });
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                String json = response.body().string();
+                String payInfo = null;
+                if (!"".equals(json)) {
+                    Type type = new TypeToken<HttpResult<String>>(){}.getType();
+                    HttpResult<String> resultData = new Gson().fromJson(json, type);
+                    payInfo = resultData.getData();
+                }
+                if (payInfo != null && !"".equals(payInfo)) {
+                    final String finalPayInfo = payInfo;
+                    mAlipay.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            doAliPay(finalPayInfo);
+                        }
+                    });
+                }
+            }
+        });
+    }
+
+    /**
      * 支付宝支付
      */
-    private void doAliPay() {
+    private void doAliPay(String payInfo) {
         //在服务器生成订单信息
-        String payInfo = "";
         //客户端调起支付宝支付
         Alipay alipay = new Alipay(PayActivity.this, payInfo, new Alipay.AlipayResultCallBack() {
             @Override
             public void onSuccess() {
                 Log.d(TAG, "支付成功");
+                mLogInfo.append("支付宝支付成功\n");
             }
 
             @Override
             public void onDealing() {
                 Log.d(TAG, "支付中");
+                mLogInfo.append("支付宝支付中\n");
             }
 
             @Override
             public void onError(int error_code) {
                 Log.d(TAG, "支付错误" + error_code);
+                mLogInfo.append("支付宝支付错误" + error_code + "\n");
             }
 
             @Override
@@ -203,7 +266,7 @@ public class PayActivity extends BaseActivity {
                     String nickname = jsonObject.getString("nickname");
                     String sex = jsonObject.getInt("sex") == 0 ? "女" : "男";
                     String headImgUrl = jsonObject.getString("headimgurl");
-                    //TODO 获取到昵称、性别，头像后进行app用户注册
+                    // TODO 获取到昵称、性别，头像后进行app用户注册
                     Log.d(TAG, "onResponse: " + nickname + "," + sex);
                     mLogInfo.append(nickname + "登录成功," + sex + "\n");
                 } catch (JSONException e) {

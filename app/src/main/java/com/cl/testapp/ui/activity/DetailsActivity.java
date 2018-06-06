@@ -39,7 +39,7 @@ public class DetailsActivity extends BaseActivity {
     private void init() {
         setToolbar(mToolbar, "主体色与垂直ViewPager", true);
         final String imgUrl = "http://ww4.sinaimg.cn/large/610dc034jw1f8bc5c5n4nj20u00irgn8.jpg";
-        //使用Glide获取网络图片转为Bitmap
+        // 使用Glide获取网络图片转为Bitmap
         Glide.with(DetailsActivity.this)
                 .load(imgUrl)
                 .asBitmap()

@@ -52,7 +52,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
         UserInfo user = mUserList.get(position);
-        holder.mUserName.setText(user.getAccount());
+        holder.mUserName.setText(user.getUsername());
         if (position % 2 == 0) {
             Glide.with(holder.mUserImg.getContext())
                     .load("https://a-ssl.duitang.com/uploads/item/201701/10/20170110214207_Ecjy5.thumb.700_0.jpeg")

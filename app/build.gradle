@@ -1,14 +1,13 @@
 apply plugin: 'com.android.application'
 apply plugin: 'org.greenrobot.greendao'
-apply plugin: 'android-apt'
 
 android {
     compileSdkVersion 25
-    buildToolsVersion "25.0.1"
+    buildToolsVersion '27.0.3'
 
     defaultConfig {
         applicationId "com.cl.testapp"
-        minSdkVersion 14
+        minSdkVersion 17
         targetSdkVersion 22
         versionCode 1
         versionName "1.0"
@@ -47,11 +46,11 @@ dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     testCompile 'junit:junit:4.12'
     //ui
-    compile 'com.android.support:support-v4:25.2.0'
-    compile 'com.android.support:appcompat-v7:25.2.0'
-    compile 'com.android.support:design:25.2.0'
-    compile 'com.android.support:recyclerview-v7:25.2.0'
-    compile 'com.android.support:palette-v7:25.2.0'
+    compile 'com.android.support:support-v4:25.3.1'
+    compile 'com.android.support:appcompat-v7:25.3.1'
+    compile 'com.android.support:design:25.3.1'
+    compile 'com.android.support:recyclerview-v7:25.3.1'
+    compile 'com.android.support:palette-v7:25.3.1'
     //network
     compile 'com.squareup.okhttp3:okhttp:3.4.1'
     compile 'com.squareup.retrofit2:retrofit:2.1.0'
@@ -60,14 +59,10 @@ dependencies {
     compile 'com.zhy:okhttputils:2.6.2'
     compile 'com.github.bumptech.glide:glide:3.7.0'
     compile 'jp.wasabeef:glide-transformations:2.0.0'
-    //七牛
-    compile 'com.qiniu:qiniu-android-sdk:7.3.3'
     //rx
     compile 'io.reactivex:rxjava:1.1.6'
     compile 'io.reactivex:rxandroid:1.2.1'
     compile 'com.jakewharton.rxbinding:rxbinding:0.4.0'
-    //图表
-    compile 'com.github.PhilJay:MPAndroidChart:v3.0.0'
     //Icon管理
     compile 'com.mikepenz:iconics-core:2.8.1@aar'
     //垂直viewPage
@@ -82,7 +77,7 @@ dependencies {
     compile 'org.greenrobot:greendao:3.2.0'
     //注解
     compile 'com.jakewharton:butterknife:8.4.0'
-    apt 'com.jakewharton:butterknife-compiler:8.4.0'
+    annotationProcessor 'com.jakewharton:butterknife-compiler:8.4.0'
 
     //jar
     compile files('libs/alipaySdk-20160516.jar')

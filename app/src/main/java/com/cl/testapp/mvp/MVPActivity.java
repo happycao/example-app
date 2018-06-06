@@ -17,7 +17,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class MVPActivity extends BaseActivity implements UserContract.View{
+public class MVPActivity extends BaseActivity implements UserContract.View {
 
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
@@ -42,7 +42,7 @@ public class MVPActivity extends BaseActivity implements UserContract.View{
         mRecyclerView.setAdapter(mAdapter);
 
         mPresenter = new UserPresenter(this);
-//        mPresenter.loadUsers(this);
+        mPresenter.loadUsers(this);
     }
 
     @Override

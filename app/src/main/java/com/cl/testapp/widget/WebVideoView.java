@@ -1,14 +1,13 @@
 package com.cl.testapp.widget;
 
 import android.content.Context;
+import android.content.Intent;
 import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.Build;
 import android.util.AttributeSet;
 import android.util.Base64;
-import android.webkit.WebChromeClient;
-import android.webkit.WebSettings;
-import android.webkit.WebView;
-import android.webkit.WebViewClient;
+import android.webkit.*;
 
 import com.cl.testapp.BuildConfig;
 
@@ -40,16 +39,37 @@ public class WebVideoView extends WebView {
     private void init() {
         setWebViewClient(new WebClient());
         setWebChromeClient(new ChromeClient());
+        // 相关设置
         WebSettings webSettings = getSettings();
+        // 排版适应屏幕
+        webSettings.setLayoutAlgorithm(WebSettings.LayoutAlgorithm.NARROW_COLUMNS);
+        // JavaScript
         webSettings.setJavaScriptEnabled(true);
+        // 允许访问文件
         webSettings.setAllowFileAccess(true);
-        webSettings.setDatabaseEnabled(true);
+
+        webSettings.setDatabaseEnabled(false);
+
         webSettings.setDomStorageEnabled(true);
-        webSettings.setSaveFormData(false);
+        // 保存表单数据
+        webSettings.setSaveFormData(true);
+        // 缓存
         webSettings.setAppCacheEnabled(true);
+        // 缓存模式
         webSettings.setCacheMode(WebSettings.LOAD_DEFAULT);
+        // setUseWideViewPort方法设置webview推荐使用的窗口
+        // setLoadWithOverviewMode方法是设置webview加载的页面的模式。
         webSettings.setLoadWithOverviewMode(false);
+        // 隐藏缩放按钮
+        webSettings.setBuiltInZoomControls(true);
+        // 可任意比例缩放
         webSettings.setUseWideViewPort(true);
+        // 不显示webview缩放按钮
+        webSettings.setDisplayZoomControls(false);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            webSettings.setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
+        }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             if (BuildConfig.DEBUG) {
@@ -61,35 +81,21 @@ public class WebVideoView extends WebView {
 
     private class WebClient extends WebViewClient {
 
+        @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
-            if (url != null) view.loadUrl(url);
+            // 非http调起其他app
+            if (!url.startsWith("http")) {
+                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+                view.getContext().startActivity(intent);
+                return true;
+            }
+            view.loadUrl(url);
             return true;
         }
 
         @Override
         public void onPageFinished(WebView view, String url) {
             super.onPageFinished(view, url);
-        }
-
-        // 添加css
-        private void injectCSS(String filename) {
-            try {
-                InputStream inputStream = mContext.getAssets().open(filename);
-                byte[] buffer = new byte[inputStream.available()];
-                inputStream.read(buffer);
-                inputStream.close();
-                String encoded = Base64.encodeToString(buffer, Base64.NO_WRAP);
-                loadUrl("javascript:(function() {" +
-                        "var parent = document.getElementsByTagName('head').item(0);" +
-                        "var style = document.createElement('style');" +
-                        "style.type = 'text/css';" +
-                        // Tell the browser to BASE64-decode the string into your script !!!
-                        "style.innerHTML = window.atob('" + encoded + "');" +
-                        "parent.appendChild(style)" +
-                        "})()");
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
         }
     }
 

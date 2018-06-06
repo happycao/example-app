@@ -119,7 +119,7 @@ public class WaterfallAdapter extends RecyclerView.Adapter<WaterfallAdapter.MyVi
 
             // 如果设置了回调，则设置点击事件
             if (mOnItemClickListener != null) {
-                itemView.setOnClickListener(new View.OnClickListener() {
+                mImgItem.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         mOnItemClickListener.onItemClick(v, mPosition);

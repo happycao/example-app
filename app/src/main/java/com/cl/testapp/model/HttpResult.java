@@ -1,21 +1,22 @@
-package com.cl.testapp.mvc;
+package com.cl.testapp.model;
+
+import java.io.Serializable;
 
 /**
  *
  * Created by Administrator on 2017-02-27.
  */
+public class HttpResult<T> implements Serializable {
 
-public class HttpResult<T> {
-
-    private int code;
+    private String code;
     private String msg;
     private T data;
 
-    public int getCode() {
+    public String getCode() {
         return code;
     }
 
-    public void setCode(int code) {
+    public void setCode(String code) {
         this.code = code;
     }
 

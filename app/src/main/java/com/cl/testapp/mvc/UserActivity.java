@@ -8,6 +8,7 @@ import android.support.v7.widget.Toolbar;
 import com.cl.testapp.R;
 import com.cl.testapp.ui.base.BaseActivity;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -46,7 +47,8 @@ public class UserActivity extends BaseActivity {
         });
     }
 
-    public void setRecyclerView(List<UserInfo> userList) {
+    private void setRecyclerView(List<UserInfo> userList) {
+        if (userList == null) userList = new ArrayList<>();
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         UserAdapter adapter = new UserAdapter(this, userList);
         mRecyclerView.setAdapter(adapter);

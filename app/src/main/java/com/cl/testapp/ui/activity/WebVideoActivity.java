@@ -41,7 +41,6 @@ public class WebVideoActivity extends BaseActivity {
 
     private void init() {
         mWebVideo.loadUrl("http://www.bilibili.com/video/av7449411/");
-        mWebVideo.addJavascriptInterface(WebVideoActivity.this, "training");
         mWebVideo.addJavascriptInterface(WebVideoActivity.this, "main");
 
     }
@@ -84,13 +83,12 @@ public class WebVideoActivity extends BaseActivity {
     @Override
     protected void onPause() {
         pauseVideoView();
-        clearVideoView();
         super.onPause();
     }
 
     @Override
     protected void onDestroy() {
-        resumeVideoView();
+        clearVideoView();
         super.onDestroy();
     }
 

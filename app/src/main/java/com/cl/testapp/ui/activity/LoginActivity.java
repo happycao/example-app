@@ -1,6 +1,5 @@
 package com.cl.testapp.ui.activity;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.AppCompatEditText;
 import android.support.v7.widget.Toolbar;
@@ -87,9 +86,13 @@ public class LoginActivity extends BaseActivity {
             public void call(Void aVoid) {
                 Log.i("xl", "click");
                 String name = mEtUsername.getText().toString().trim();
-                int age = Integer.parseInt(mEtPassword.getText().toString().trim());
+                int age = 19;
+                try {
+                    age = Integer.parseInt(mEtPassword.getText().toString().trim());
+                } catch (NumberFormatException e) {
+                    mLogInfo.append("psd:" + mEtPassword.getText().toString().trim() + "\n");
+                }
                 String info = mEtSearch.getText().toString().trim();
-//                mLogInfo.append("User:" + name + "," + age + "\n");
                 User user = new User(name, age, 0, info);
                 try {
                     DBManager.getInstance(LoginActivity.this).insertUser(user);
@@ -100,8 +103,8 @@ public class LoginActivity extends BaseActivity {
                 }
                 List<User> userList = DBManager.getInstance(LoginActivity.this).getUserList();
                 num = userList.size();
-                for (User u: userList) {
-                    mLogInfo.append("User:id="+ u.getId() + "，name=" + u.getName() + "，age=" + u.getAge() + ",info=" + u.getInfo() + "\n");
+                for (User u : userList) {
+                    mLogInfo.append("User:id=" + u.getId() + "，name=" + u.getName() + "，age=" + u.getAge() + ",info=" + u.getInfo() + "\n");
                 }
             }
         });
@@ -117,10 +120,6 @@ public class LoginActivity extends BaseActivity {
                 return false;
             }
         });
-    }
-
-    private void goPay() {
-        startActivity(new Intent(LoginActivity.this, PayActivity.class));
     }
 
 }

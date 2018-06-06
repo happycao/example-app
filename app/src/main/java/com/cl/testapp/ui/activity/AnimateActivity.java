@@ -1,33 +1,32 @@
 package com.cl.testapp.ui.activity;
 
-import android.app.Activity;
-import android.content.Intent;
-import android.os.Build;
+import android.graphics.Color;
 import android.os.Bundle;
-import android.os.Environment;
-import android.provider.MediaStore;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
+import android.text.Editable;
+import android.text.Spannable;
+import android.text.TextUtils;
+import android.text.TextWatcher;
+import android.text.style.ForegroundColorSpan;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.cl.testapp.R;
 import com.cl.testapp.ui.base.BaseActivity;
-import com.cl.testapp.util.Util;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-import com.zhy.http.okhttp.OkHttpUtils;
-import com.zhy.http.okhttp.callback.StringCallback;
 
-import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import okhttp3.Call;
 
 public class AnimateActivity extends BaseActivity {
 
@@ -35,21 +34,22 @@ public class AnimateActivity extends BaseActivity {
     Toolbar mToolbar;
     @BindView(R.id.iv_animate)
     ImageView mIvAnimate;
-
-    @BindView(R.id.get_token)
-    Button mGetToken;
-    @BindView(R.id.get_upload_token)
-    Button mGetUploadToken;
-    @BindView(R.id.upload_img)
-    Button mUploadImg;
+    @BindView(R.id.input_info)
+    EditText mInputInfo;
+    @BindView(R.id.btn_topic)
+    Button mBtnTopic;
+    @BindView(R.id.btn_at)
+    Button mBtnAt;
+    @BindView(R.id.btn_moe)
+    Button mBtnMoe;
     @BindView(R.id.log_info)
     TextView mLogInfo;
-    @BindView(R.id.img)
-    ImageView mImg;
 
-    private String uid = "";
-    private String token = "";
-    private String uploadToken = "";
+    private StringBuilder stringBuilder = new StringBuilder();
+
+    private List<String> mActionList = new ArrayList<>();
+    private List<ForegroundColorSpan> mColorSpans = new ArrayList<>();
+    private boolean isInAfter = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,138 +67,116 @@ public class AnimateActivity extends BaseActivity {
                 .load(imgUrl)
                 .asBitmap()
                 .into(mIvAnimate);
-    }
 
-    private void login() {
-        String url = "http://192.168.10.123:8008/s_user_auth/gain_user_token";
-        String onlineUrl = "http://192.168.10.125:8080/fitness/s_user_auth/gain_user_token";
-        OkHttpUtils.post()
-                .url(url)
-                .addParams("tel", "15570772073")
-                .addParams("psw", "abcd1234")
-                .build()
-                .execute(new StringCallback() {
-                    @Override
-                    public void onError(Call call, Exception e, int id) {
-                        Util.toastShow(AnimateActivity.this, e.toString());
+        mInputInfo.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (TextUtils.isEmpty(s)) return;
+                // 查找话题和@
+                String content = s.toString();
+                mActionList.clear();
+                mActionList.addAll(findAction(content));
+
+                // 首先移除之前设置的colorSpan
+                Editable editable = mInputInfo.getText();
+                for (ForegroundColorSpan mColorSpan : mColorSpans) {
+                    editable.removeSpan(mColorSpan);
+                }
+                mColorSpans.clear();
+                // 设置前景色colorSpan
+                int findPos = 0;
+                for (String topic : mActionList) {
+                    findPos = content.indexOf(topic, findPos);
+                    if (findPos != -1) {
+                        ForegroundColorSpan colorSpan = new ForegroundColorSpan(Color.BLUE);
+                        editable.setSpan(colorSpan, findPos, findPos = findPos + topic.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                        mColorSpans.add(colorSpan);
+                    }
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+
+        mInputInfo.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                if (keyCode == KeyEvent.KEYCODE_DEL && event.getAction() == KeyEvent.ACTION_DOWN && isInAfter) {
+
+                    int selectionStart = mInputInfo.getSelectionStart();
+                    int selectionEnd = mInputInfo.getSelectionEnd();
+                    // 如果光标起始和结束在同一位置,说明是选中效果,直接返回 false 交给系统执行删除动作
+                    if (selectionStart != selectionEnd) {
+                        return false;
                     }
 
-                    @Override
-                    public void onResponse(String response, int id) {
-                        Util.toastShow(AnimateActivity.this, response);
-                        JsonParser parser = new JsonParser();
-                        JsonObject object = parser.parse(response).getAsJsonObject();
-                        if (object.get("code").getAsInt() == 200) {
-                            JsonObject extra = object.getAsJsonObject("extra");
-                            JsonObject data = extra.getAsJsonObject("data");
-                            uid = data.get("uid").getAsString();
-                            token = data.get("token").getAsString();
-                            Util.toastShow(AnimateActivity.this, "登录成功");
+                    Editable editable = mInputInfo.getText();
+                    String content = editable.toString();
+                    int lastPos = 0;
+                    // 遍历判断光标的位置
+                    for (String action : mActionList) {
+                        lastPos = content.indexOf(action, lastPos);
+                        if (lastPos != -1) {
+                            if (selectionStart != 0 && selectionStart >= lastPos && selectionStart <= (lastPos + action.length())) {
+                                //选中话题
+                                mInputInfo.setSelection(lastPos, lastPos + action.length());
+                                return true;
+                            }
                         }
+                        lastPos += action.length();
                     }
-                });
+                }
+                return false;
+            }
+        });
     }
 
-
-    private void getUploadToken() {
-        String url = "http://192.168.10.123:8008/s_user/gain_upload_token";
-        String onlineUrl = "http://keepapp.yamon.com.cn/sports/s_user/gain_upload_token";
-        OkHttpUtils.get()
-                .url(url)
-                .addHeader("yamon-com-uid", uid)
-                .addHeader("yamon-com-token", token)
-                .build()
-                .execute(new StringCallback() {
-                    @Override
-                    public void onError(Call call, Exception e, int id) {
-                        Log.d(TAG, "onError: " + e.toString());
-                        Util.toastShow(AnimateActivity.this, "错误");
-                    }
-
-                    @Override
-                    public void onResponse(String response, int id) {
-                        Log.d(TAG, "onResponse: " + response);
-                        JsonParser parser = new JsonParser();
-                        JsonObject object = parser.parse(response).getAsJsonObject();
-                        if (object.get("code").getAsInt() == 200) {
-                            uploadToken = object.get("extra").getAsString();
-                            Util.toastShow(AnimateActivity.this, "获取成功");
-                        }
-                    }
-                });
-    }
-
-    private void uploadFile() {
-        String url = "http://192.168.10.123:8008/s_upload/upload";
-        String onlineUrl = "http://keepapp.yamon.com.cn/sports/s_upload/upload";
-
-        File file = new File(Environment.getExternalStorageDirectory(), "20170323.jpg");
-        if (!file.exists()) {
-            Util.toastShow(this, "文件不存在，请修改文件路径");
-            return;
-        }
-
-        OkHttpUtils.post()
-                .url(url)
-                .addHeader("yamon-com-uid", uid)
-                .addHeader("yamon-com-token", token)
-                .addHeader("yamon-com-upload-token", uploadToken)
-                .addParams("phone", "15570772073")
-                .addFile("img", "2017-03-20.jpg", file)
-//                .addFile("img", "2017-03-21.jpg", file)
-//                .addFile("img", "2017-03-22.jpg", file)
-                .build()
-                .execute(new StringCallback() {
-                    @Override
-                    public void onError(Call call, Exception e, int id) {
-                        Log.d(TAG, "onError: " + e.toString());
-                        Util.toastShow(AnimateActivity.this, e.toString());
-                    }
-
-                    @Override
-                    public void onResponse(String response, int id) {
-                        Util.toastShow(AnimateActivity.this, response);
-                    }
-                });
-    }
-
-    @OnClick({R.id.get_token, R.id.get_upload_token, R.id.upload_img})
+    @OnClick({R.id.btn_topic, R.id.btn_at, R.id.btn_moe})
     public void onClick(View view) {
+        Editable text = mInputInfo.getText();
+        stringBuilder = new StringBuilder();
+        stringBuilder.append(text);
         switch (view.getId()) {
-            case R.id.get_token:
-                login();
+            case R.id.btn_topic:
+                stringBuilder.append("#你看看你#");
                 break;
-            case R.id.get_upload_token:
-                getUploadToken();
+            case R.id.btn_at:
+                stringBuilder.append("@你说你啊 ");
                 break;
-            case R.id.upload_img:
-                uploadFile();
+            case R.id.btn_moe:
+                stringBuilder.append("(❤ω❤)");
                 break;
         }
+        setText();
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == Activity.RESULT_OK && data != null) {
-            String filePath = data.getData().toString();
-            mLogInfo.setText(filePath);
-            Glide.with(this).load(filePath).into(mImg);
+    private void setText() {
+        mInputInfo.setText(stringBuilder.toString());
+        mInputInfo.setSelection(stringBuilder.length());
+    }
+
+    // 正则表达式,一定要和服务器以及 iOS 端统一
+    private static final String TOPIC = "#([^#]+?)#";
+    private static final String AT = "@[\\w\\p{InCJKUnifiedIdeographs}-]{1,26} ";
+    private static final String ALL = "(" + AT + ")" + "|" + "(" + TOPIC + ")";
+    private static ArrayList<String> findAction(String s) {
+
+        Pattern p = Pattern.compile(ALL);
+        Matcher m = p.matcher(s);
+
+        ArrayList<String> list = new ArrayList<>();
+        while (m.find()) {
+            list.add(m.group());
         }
+        return list;
     }
 
-    /**
-     * 打开相册
-     */
-    private void getPicture() {
-        Intent intent;
-        if (Build.VERSION.SDK_INT < 19) {
-            intent = new Intent(Intent.ACTION_GET_CONTENT);
-            intent.setType("image/*");
-        } else {
-            intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        }
-        this.startActivityForResult(intent, 0x01);
-
-    }
 }
