@@ -2,15 +2,15 @@ package com.cl.testapp.widget;
 
 import android.content.Context;
 import android.graphics.Typeface;
+import android.support.v7.widget.AppCompatTextView;
 import android.util.AttributeSet;
-import android.widget.TextView;
 
 /**
  * 支持IconFont的TextView
  * Created by Administrator on 2016-11-25.
  */
 
-public class IconFontView extends TextView {
+public class IconFontView extends AppCompatTextView {
 
     private static Typeface cachedTypeFace = null;
 

@@ -39,7 +39,7 @@ public class IconFont implements ITypeface {
 
     @Override
     public String getMappingPrefix() {
-        return "xl";
+        return "icon";
     }
 
     @Override
@@ -104,51 +104,36 @@ public class IconFont implements ITypeface {
     }
 
     public enum Icon implements IIcon {
-        xl_index('\ue60b'),
-        xl_coffee('\ue60c'),
-        xl_gwc('\ue60d'),
-        xl_mine('\ue60a'),
-        xl_favorite('\ue600'),
-        xl_payment('\ue60e'),
-        xl_indent('\ue602'),
-        xl_shipments('\ue603'),
-        xl_site('\ue60a'),
-        xl_address('\ue604'),
-        xl_my('\ue605'),
-        xl_receive('\ue606'),
-        xl_set('\ue607'),
-        xl_inform('\ue608'),
-        xl_estimate('\ue611'),
-        xl_enter('\ue601'),
-        xl_back('\ue60f'),
-        xl_personage('\ue614'),
-        xl_update('\ue613'),
-        xl_set_my('\ue612'),
-        xl_order_inform('\ue615'),
-        xl_set_inform('\ue609'),
-        xl_inform_deal('\ue616'),
-        xl_inform_interaction('\ue617'),
-        xl_login_id('\ue619'),
-        xl_login_password('\ue618'),
-        xl_shoping_close('\ue61a'),
-        xl_order_iv('\ue61b'),
-        xl_weixin('\ue61d'),
-        xl_zfb('\ue61e'),
-        xl_yue('\ue61c'),
-        xl_favorite_2('\ue61f'),
-        xl_logistics('\ue620'),
-        xl_share('\ue648'),
-        xl_comment('\ue655'),
-        xl_portrait('\ue64f'),
-        xl_new('\ue638'),
-        xl_network_error('\ue677'),
-        xl_cart_none('\ue663'),
-        xl_made_none('\ue622'),
-        xl_location_none('\ue693'),
-        xl_logistics_none('\ue623'),
-        xl_head_collect('\ue64c'),
-        xl_head_share('\ue62b'),
-        xl_head_config('\ue624');
+        icon_mine_fill('\ue70f'),
+        icon_add('\ue6df'),
+        icon_message('\ue70c'),
+        icon_brush('\ue6e5'),
+        icon_unfold('\ue749'),
+        icon_search('\ue741'),
+        icon_undo('\ue739'),
+        icon_setup('\ue729'),
+        icon_setup_fill('\ue728'),
+        icon_return('\ue720'),
+        icon_people('\ue716'),
+        icon_mine('\ue70e'),
+        icon_lock('\ue709'),
+        icon_like('\ue708'),
+        icon_like_fill('\ue707'),
+        icon_interactive('\ue705'),
+        icon_interactive_fill('\ue704'),
+        icon_homepage('\ue703'),
+        icon_homepage_fill('\ue702'),
+        icon_enter('\ue6f8'),
+        icon_eit('\ue6f5'),
+        icon_delete('\ue6f3'),
+        icon_delete_fill('\ue6f2'),
+        icon_collection('\ue6eb'),
+        icon_collection_fill('\ue6ea'),
+        icon_close('\ue6e9'),
+        icon_camera('\ue6e8'),
+        icon_camera_fill('\ue6e7'),
+        icon_browse('\ue6e4'),
+        icon_accessory('\ue6dd');
 
         char character;
 

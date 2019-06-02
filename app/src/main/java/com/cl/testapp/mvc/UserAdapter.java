@@ -2,6 +2,7 @@ package com.cl.testapp.mvc;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -52,24 +53,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
         UserInfo user = mUserList.get(position);
-        holder.mUserName.setText(user.getUsername());
-        if (position % 2 == 0) {
-            Glide.with(holder.mUserImg.getContext())
-                    .load("https://a-ssl.duitang.com/uploads/item/201701/10/20170110214207_Ecjy5.thumb.700_0.jpeg")
-                    .bitmapTransform(new CropCircleTransformation(holder.mUserImg.getContext()))
-                    .into(holder.mUserImg);
-            String pattern = "左手{代码}，右手{诗歌}";
-            CharSequence chars = ColorPhrase.from(pattern).withSeparator("{}").innerColor(0xFFE6454A).outerColor(0xFF666666).format();
-            holder.mUserInfo.setText(chars);
-            holder.mUserSex.setImageResource(R.mipmap.ic_man);
-        } else {
-            Glide.with(holder.mUserImg.getContext())
-                    .load("https://a-ssl.duitang.com/uploads/item/201611/24/20161124205521_KTLzw.thumb.700_0.jpeg")
-                    .bitmapTransform(new CropCircleTransformation(holder.mUserImg.getContext()))
-                    .into(holder.mUserImg);
-            holder.mUserInfo.setText("人生还有诗和远方");
-            holder.mUserSex.setImageResource(R.mipmap.ic_woman);
-        }
+        holder.bindItem(user, position);
     }
 
     @Override
@@ -91,6 +75,34 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
         public ViewHolder(View view) {
             super(view);
             ButterKnife.bind(this, view);
+        }
+
+        public void bindItem(UserInfo user, int position) {
+            mUserName.setText(user.getUsername());
+            String avatar = user.getAvatar();
+            if (!TextUtils.isEmpty(avatar)) {
+                avatar = "http://47.100.245.128/rss/lingxi-test" + avatar;
+            }
+
+            if (position % 2 == 0) {
+                if (TextUtils.isEmpty(avatar)) {
+                    avatar = "https://a-ssl.duitang.com/uploads/item/201701/10/20170110214207_Ecjy5.thumb.700_0.jpeg";
+                }
+                String pattern = "左手{代码}，右手{诗歌}";
+                CharSequence chars = ColorPhrase.from(pattern).withSeparator("{}").innerColor(0xFFE6454A).outerColor(0xFF666666).format();
+                mUserInfo.setText(chars);
+                mUserSex.setImageResource(R.mipmap.ic_man);
+            } else {
+                if (TextUtils.isEmpty(avatar)) {
+                    avatar = "https://a-ssl.duitang.com/uploads/item/201611/24/20161124205521_KTLzw.thumb.700_0.jpeg";
+                }
+                mUserInfo.setText("人生还有诗和远方");
+                mUserSex.setImageResource(R.mipmap.ic_woman);
+            }
+            Glide.with(mUserImg.getContext())
+                    .load(avatar)
+                    .bitmapTransform(new CropCircleTransformation(mUserImg.getContext()))
+                    .into(mUserImg);
         }
     }
 

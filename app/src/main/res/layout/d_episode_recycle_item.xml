@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/arc_hive_name"
+    android:layout_width="wrap_content"
+    android:layout_height="@dimen/spacing_48"
+    android:background="@drawable/arc_hive_selector"
+    android:gravity="center"
+    android:padding="@dimen/spacing_16"
+    android:textColor="@color/arc_hive_selector"
+    android:text="@string/app_placeholder">
+
+</TextView>

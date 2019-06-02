@@ -4,13 +4,14 @@ import android.content.Context;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.cl.testapp.okhttp.OkUtil;
+import com.cl.testapp.okhttp.ResultCallback;
 import com.tencent.mm.opensdk.constants.Build;
 import com.tencent.mm.opensdk.modelbase.BaseResp;
 import com.tencent.mm.opensdk.modelmsg.SendAuth;
 import com.tencent.mm.opensdk.modelpay.PayReq;
 import com.tencent.mm.opensdk.openapi.IWXAPI;
 import com.tencent.mm.opensdk.openapi.WXAPIFactory;
-import com.zhy.http.okhttp.OkHttpUtils;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -18,7 +19,7 @@ import org.json.JSONObject;
 import okhttp3.Call;
 
 /**
- * 微信登录支付 yamon.com
+ * 微信登录支付
  * Created by tsy on 16/6/1.
  */
 public class WXUtil {
@@ -113,15 +114,9 @@ public class WXUtil {
      */
     public static void getWXToken(String code) {
         String url = "https://api.weixin.qq.com/sns/oauth2/access_token?appid=" + WX_AppId + "&secret=" + WX_AppSecret + "&code=" + code + "&grant_type=authorization_code";
-        OkHttpUtils.get().url(url).build().execute(new com.zhy.http.okhttp.callback.StringCallback() {
+        OkUtil.get().url(url).execute(new ResultCallback<String>() {
             @Override
-            public void onError(Call call, Exception e, int id) {
-                mLoginCallBack.onError(ERROR_NO_TOKEN);
-                mLoginCallBack = null;
-            }
-
-            @Override
-            public void onResponse(String response, int id) {
+            public void onSuccess(String response) {
                 Log.d(TAG, "onResponse: " + response);
                 try {
                     JSONObject jsonObject = new JSONObject(response);
@@ -130,6 +125,12 @@ public class WXUtil {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
+            }
+
+            @Override
+            public void onError(Call call, Exception e) {
+                mLoginCallBack.onError(ERROR_NO_TOKEN);
+                mLoginCallBack = null;
             }
         });
     }
@@ -142,15 +143,14 @@ public class WXUtil {
      */
     public void refreshWXToken(String refreshToken) {
         String url = "https://api.weixin.qq.com/sns/oauth2/refresh_token?appid=" + WXUtil.WX_AppId + "&grant_type=refresh_token&refresh_token=" + refreshToken;
-        OkHttpUtils.get().url(url).build().execute(new com.zhy.http.okhttp.callback.StringCallback() {
+        OkUtil.get().url(url).execute(new ResultCallback<String>() {
             @Override
-            public void onError(Call call, Exception e, int id) {
-
+            public void onSuccess(String response) {
+                Log.d(TAG, "onResponse: " + response);
             }
 
             @Override
-            public void onResponse(String response, int id) {
-
+            public void onError(Call call, Exception e) {
             }
         });
     }
@@ -163,17 +163,17 @@ public class WXUtil {
      */
     public static void getWXUserInfo(String accessToken) {
         String url = "https://api.weixin.qq.com/sns/userinfo?access_token=" + accessToken + "&openid=" + WX_AppId;
-        OkHttpUtils.get().url(url).build().execute(new com.zhy.http.okhttp.callback.StringCallback() {
+        OkUtil.get().url(url).execute(new ResultCallback<String>() {
             @Override
-            public void onError(Call call, Exception e, int id) {
-                mLoginCallBack.onError(ERROR_NO_USER_INFO);
+            public void onSuccess(String response) {
+                Log.d(TAG, "onResponse: " + response);
+                mLoginCallBack.onSuccess(response);
                 mLoginCallBack = null;
             }
 
             @Override
-            public void onResponse(String response, int id) {
-                Log.d(TAG, "onResponse: " + response);
-                mLoginCallBack.onSuccess(response);
+            public void onError(Call call, Exception e) {
+                mLoginCallBack.onError(ERROR_NO_USER_INFO);
                 mLoginCallBack = null;
             }
         });

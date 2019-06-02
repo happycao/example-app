@@ -10,7 +10,7 @@ import android.util.Log;
 import android.widget.RemoteViews;
 
 import com.cl.testapp.R;
-import com.cl.testapp.util.Util;
+import com.cl.testapp.util.Utils;
 
 import java.util.HashSet;
 import java.util.Random;
@@ -37,7 +37,7 @@ public class TestWidgetProvider extends AppWidgetProvider {
     public void onEnabled(Context context) {
         super.onEnabled(context);
         //创建第一个Widget时调用
-        context.startService(Util.getExplicitIntent(context, EXAMPLE_SERVICE_INTENT));
+        context.startService(Utils.getExplicitIntent(context, EXAMPLE_SERVICE_INTENT));
     }
 
     @Override
@@ -49,7 +49,7 @@ public class TestWidgetProvider extends AppWidgetProvider {
     @Override
     public void onDisabled(Context context) {
         //删除最后一个Widget调用
-        context.stopService(Util.getExplicitIntent(context, EXAMPLE_SERVICE_INTENT));
+        context.stopService(Utils.getExplicitIntent(context, EXAMPLE_SERVICE_INTENT));
         super.onDisabled(context);
     }
 
@@ -87,9 +87,9 @@ public class TestWidgetProvider extends AppWidgetProvider {
 //            updateWidget(context);
         }else if (intent.getAction().equals(ACTION_REFESH)) {
             // 按钮点击广播
-            Util.toastShow(context, intent.getAction());
-            if (!Util.isServiceWork(context, "com.cl.testapp.widget.test.TestWidgetService")){
-                context.startService(Util.getExplicitIntent(context, EXAMPLE_SERVICE_INTENT));
+            Utils.toastShow(context, intent.getAction());
+            if (!Utils.isServiceWork(context, "com.cl.testapp.widget.test.TestWidgetService")){
+                context.startService(Utils.getExplicitIntent(context, EXAMPLE_SERVICE_INTENT));
             }
         }
         super.onReceive(context, intent);

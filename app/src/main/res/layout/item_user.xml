@@ -14,8 +14,7 @@
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:adjustViewBounds="true"
-            android:layout_marginRight="@dimen/common_margin"
-            android:src="@mipmap/ic_launcher"/>
+            android:layout_marginRight="@dimen/common_margin"/>
 
             <TextView
                 android:id="@+id/user_name"
@@ -34,7 +33,7 @@
                 android:layout_toRightOf="@+id/user_name"
                 android:layout_marginTop="@dimen/card_margin"
                 android:padding="@dimen/card_padding"
-                android:src="@mipmap/ic_launcher"/>
+                android:src="@mipmap/ic_man"/>
 
             <TextView
                 android:id="@+id/user_info"

@@ -2,11 +2,14 @@
 
 buildscript {
     repositories {
+        google()
+        // mavenCentral()
+        // 国内使用
+        maven { url 'http://maven.aliyun.com/nexus/content/groups/public/' }
         jcenter()
-        mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.0.1'
+        classpath 'com.android.tools.build:gradle:3.2.1'
         classpath 'org.greenrobot:greendao-gradle-plugin:3.2.1'
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
@@ -15,8 +18,11 @@ buildscript {
 
 allprojects {
     repositories {
+        google()
+        // mavenCentral()
+        // 国内使用
+        maven { url 'http://maven.aliyun.com/nexus/content/groups/public/' }
         jcenter()
-        maven { url "https://jitpack.io" }
     }
 }
 

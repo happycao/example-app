@@ -1,8 +1,8 @@
 package com.cl.testapp.mvc;
 
 import com.cl.testapp.model.HttpResult;
-import com.cl.testapp.util.JsonCallback;
-import com.zhy.http.okhttp.OkHttpUtils;
+import com.cl.testapp.okhttp.OkUtil;
+import com.cl.testapp.okhttp.ResultCallback;
 
 import java.util.List;
 
@@ -17,18 +17,17 @@ public class UserModelImpl implements UserModel {
 
     @Override
     public void getUsers(final onUserListener listener) {
-        OkHttpUtils.post()
+        OkUtil.post()
                 .url("http://47.100.245.128/lingxi-test/user/rc/list")
-                .build()
-                .execute(new JsonCallback<HttpResult<List<UserInfo>>>() {
+                .execute(new ResultCallback<HttpResult<List<UserInfo>>>() {
                     @Override
-                    public void onError(Call call, Exception e, int id) {
-                        listener.onError();
+                    public void onSuccess(HttpResult<List<UserInfo>> response) {
+                        listener.onSuccess(response.getData());
                     }
 
                     @Override
-                    public void onResponse(HttpResult<List<UserInfo>> response, int id) {
-                        listener.onSuccess(response.getData());
+                    public void onError(Call call, Exception e) {
+                        listener.onError();
                     }
                 });
     }

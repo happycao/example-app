@@ -14,7 +14,7 @@ import android.widget.LinearLayout;
 import com.cl.testapp.R;
 import com.cl.testapp.ui.adapter.CheckboxAdapter;
 import com.cl.testapp.ui.base.BaseActivity;
-import com.cl.testapp.util.Util;
+import com.cl.testapp.util.Utils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,7 +51,7 @@ public class CheckBoxActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_check_box);
+        setContentView(R.layout.check_box_activity);
         ButterKnife.bind(this);
         initToolBar();
         setRecyclerView();
@@ -88,13 +88,14 @@ public class CheckBoxActivity extends BaseActivity {
             data.add("this is checkbox " + i);
         }
         mRecyclerView.setLayoutManager(new LinearLayoutManager(CheckBoxActivity.this, LinearLayoutManager.VERTICAL, false));
-        new LinearSnapHelper().attachToRecyclerView(mRecyclerView);//滑动视图后使停止位置正好停在某页的正中间
+        // 滑动视图后使停止位置正好停在某页的正中间
+        new LinearSnapHelper().attachToRecyclerView(mRecyclerView);
         adapter = new CheckboxAdapter(CheckBoxActivity.this, data);
         mRecyclerView.setAdapter(adapter);
         adapter.setOnItemClickListener(new CheckboxAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
-                Util.toastShow(view.getContext(), data.get(position));
+                Utils.toastShow(view.getContext(), data.get(position));
             }
 
             @Override

@@ -4,7 +4,6 @@ package com.cl.testapp.model;
  * 首页跳转
  * Created by Administrator on 2017-02-24.
  */
-
 public class GoBean {
 
     private String title;

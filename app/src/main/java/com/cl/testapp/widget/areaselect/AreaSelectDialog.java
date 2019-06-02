@@ -30,9 +30,9 @@ import java.util.List;
 /**
  * 地区选择
  * 相关资源如下
- * {@link src.main:assets/area.json},{@link src.main:layout.dialog_area_select}
- * {@link src.main:layout.item_area},{@link src.main:drawable.ic_vector_close}
- * {@link src.main:drawable.ic_vector_select},{@link Area},{@link AreaAdapter}
+ * {@code src.main:assets/area.json},{@code src.main:layout.dialog_area_select}
+ * {@code src.main:layout.item_area},{@code src.main:drawable.ic_vector_close}
+ * {@code src.main:drawable.ic_vector_select},{@link Area},{@link AreaAdapter}
  * Created by cl on 2016-12-20.
  */
 
@@ -120,7 +120,7 @@ public class AreaSelectDialog extends BottomSheetDialog {
         public Builder(@NonNull Context context) {
             mContext = context;
             mDialog = new AreaSelectDialog(mContext);
-            View layout = LayoutInflater.from(mContext).inflate(R.layout.dialog_area_select, null);
+            View layout = LayoutInflater.from(mContext).inflate(R.layout.area_select_dialog, null);
             mDialog.setContentView(layout);
             mClose = (ImageView) layout.findViewById(R.id.iv_close);
             mTabLayout = (TabLayout) layout.findViewById(R.id.tab_layout);
@@ -217,7 +217,7 @@ public class AreaSelectDialog extends BottomSheetDialog {
                         mCityPosition = -1;
                         mRegionPosition = -1;
                         mProvince = areaList.get(mProvincePosition).getName();
-                        //如果有没有下级，直接返回数据，有则改变状态
+                        // 如果有没有下级，直接返回数据，有则改变状态
                         if (cityList == null || cityList.size() == 0) {
                             mProvince = areaList.get(mProvincePosition).getName();
                             mTabLayout.getTabAt(0).setText(mProvince);
@@ -247,11 +247,11 @@ public class AreaSelectDialog extends BottomSheetDialog {
             for (Area.SubBeanX city : mSubBeanXs) {
                 cityList.add(city.getName());
             }
-            //此处删除待选中的"请选择"
+            // 此处删除待选中的"请选择"
             cityList.remove(0);
             final AreaAdapter cityAdapter = new AreaAdapter(mContext, cityList);
             mRecyclerView.setAdapter(cityAdapter);
-            //这里-1是原始数据并没有remove"请选择"
+            // 这里-1是原始数据并没有remove"请选择"
             if (mCityPosition != -1) {
                 cityAdapter.setSelectPosition(mCityPosition - 1);
                 mRecyclerView.scrollToPosition(mCityPosition - 1);
@@ -292,11 +292,11 @@ public class AreaSelectDialog extends BottomSheetDialog {
             for (Area.SubBeanX.SubBean region : mSubBeans) {
                 regionList.add(region.getName());
             }
-            //此处删除待选中的"请选择"
+            // 此处删除待选中的"请选择"
             regionList.remove(0);
             final AreaAdapter regionAdapter = new AreaAdapter(mContext, regionList);
             mRecyclerView.setAdapter(regionAdapter);
-            //这里-1是原始数据并没有remove"请选择"
+            // 这里-1是原始数据并没有remove"请选择"
             if (mRegionPosition != -1) {
                 regionAdapter.setSelectPosition(mRegionPosition - 1);
                 mRecyclerView.scrollToPosition(mRegionPosition - 1);
@@ -434,11 +434,11 @@ public class AreaSelectDialog extends BottomSheetDialog {
     private BottomSheetBehavior.BottomSheetCallback mBottomSheetCallback = new BottomSheetBehavior.BottomSheetCallback() {
         @Override
         public void onStateChanged(@NonNull View bottomSheet, @BottomSheetBehavior.State int newState) {
-            //newState 有四个状态 ：
-            //展开 BottomSheetBehavior.STATE_EXPANDED
-            //收起 BottomSheetBehavior.STATE_COLLAPSED
-            //拖动 BottomSheetBehavior.STATE_DRAGGING
-            //下滑 BottomSheetBehavior.STATE_SETTLING
+            // newState 有四个状态 ：
+            // 展开 BottomSheetBehavior.STATE_EXPANDED
+            // 收起 BottomSheetBehavior.STATE_COLLAPSED
+            // 拖动 BottomSheetBehavior.STATE_DRAGGING
+            // 下滑 BottomSheetBehavior.STATE_SETTLING
             switch (newState) {
                 case BottomSheetBehavior.STATE_HIDDEN:
                     dismiss();

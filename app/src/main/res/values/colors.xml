@@ -3,7 +3,16 @@
     <color name="colorPrimary">#FF4081</color>
     <color name="colorPrimaryDark">#FF4081</color>
     <color name="colorAccent">#FF4081</color>
+    <color name="textColorPrimary">@color/textColorBasic</color>
 
-    <color name="b">#ffffff</color>
+    <color name="textColorBasic">#333333</color>
+    <color name="textColorSecondary">#7f7f7f</color>
+
+    <color name="white">#ffffff</color>
+    <color name="black">#000000</color>
     <color name="c">#f6f6f6</color>
+
+    <color name="gray_dark">#646464</color>
+    <color name="grey">#cccccc</color>
+    <color name="blue">#03A9F4</color>
 </resources>

@@ -2,14 +2,17 @@ package com.cl.testapp.ui.fragment;
 
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.cl.testapp.R;
+import com.cl.testapp.widget.webview.WebVideoView;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import com.cl.testapp.R;
-import com.cl.testapp.widget.WebVideoView;
 
 public class WebViewFragment extends Fragment {
 
@@ -30,8 +33,8 @@ public class WebViewFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_web_view, container, false);
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.web_fragment, container, false);
         ButterKnife.bind(this, view);
         init();
         return view;
@@ -39,7 +42,12 @@ public class WebViewFragment extends Fragment {
 
 
     private void init() {
-        mWebVideo.loadUrl("http://www.bilibili.com/video/av7449411/");
+        mWebVideo.loadUrl("http://www.bilibili.com");
     }
 
+    @Override
+    public void onDestroy() {
+        mWebVideo.destroy();
+        super.onDestroy();
+    }
 }

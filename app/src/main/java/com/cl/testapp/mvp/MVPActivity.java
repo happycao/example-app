@@ -30,7 +30,7 @@ public class MVPActivity extends BaseActivity implements UserContract.View {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_mvp);
+        setContentView(R.layout.mvp_activity);
         ButterKnife.bind(this);
         init();
     }

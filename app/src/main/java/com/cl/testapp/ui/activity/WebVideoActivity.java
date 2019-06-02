@@ -1,5 +1,6 @@
 package com.cl.testapp.ui.activity;
 
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -11,7 +12,7 @@ import android.widget.Toast;
 
 import com.cl.testapp.R;
 import com.cl.testapp.ui.base.BaseActivity;
-import com.cl.testapp.widget.WebVideoView;
+import com.cl.testapp.widget.webview.WebVideoView;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -26,30 +27,43 @@ public class WebVideoActivity extends BaseActivity {
     WebVideoView mWebVideo;
     @BindView(R.id.btn_java2js)
     Button mBtnJava2js;
-    @BindView(R.id.btn_load_bili)
+    @BindView(R.id.btn_load_url)
     Button mBtnLoadBili;
     @BindView(R.id.btn_load_j2js)
     Button mBtnLoadJ2js;
 
+    private String mUrl;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_web_video);
+        setContentView(R.layout.web_activity);
         ButterKnife.bind(this);
         init();
     }
 
     private void init() {
-        mWebVideo.loadUrl("http://www.bilibili.com/video/av7449411/");
+        Intent intent = getIntent();
+        Bundle bundle = null;
+        if (intent != null) {
+            bundle = intent.getExtras();
+        }
+        if (bundle != null) {
+            mUrl = bundle.getString("url");
+            bundle.getString("tittle");
+        } else {
+            mUrl = "http://www.bilibili.com";
+        }
+        mWebVideo.loadUrl(mUrl);
         mWebVideo.addJavascriptInterface(WebVideoActivity.this, "main");
 
     }
 
-    @OnClick({R.id.btn_load_bili, R.id.btn_load_j2js, R.id.btn_java2js})
+    @OnClick({R.id.btn_load_url, R.id.btn_load_j2js, R.id.btn_java2js})
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.btn_load_bili:
-                mWebVideo.loadUrl("http://www.bilibili.com/video/av7449411/");
+            case R.id.btn_load_url:
+                mWebVideo.loadUrl(mUrl);
                 break;
             case R.id.btn_load_j2js:
                 mWebVideo.loadUrl("file:///android_asset/java2js.html");

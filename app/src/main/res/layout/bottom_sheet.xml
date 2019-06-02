@@ -17,7 +17,7 @@
         android:background="@color/colorAccent"
         android:gravity="center"
         android:enabled="true"
-        android:text="点我开始/结束动画"
+        android:text="上拉展开"
         android:textColor="@android:color/white"/>
 
     <LinearLayout

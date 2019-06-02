@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.activity.WebVideoActivity">
+
+    <com.cl.testapp.widget.webview.WebVideoView
+        android:id="@+id/web_video"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layerType="hardware" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_gravity="bottom">
+
+        <Button
+            android:id="@+id/btn_load_url"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="load url"/>
+
+        <Button
+            android:id="@+id/btn_load_j2js"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="load j2js"/>
+
+        <Button
+            android:id="@+id/btn_java2js"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="java2js"/>
+    </LinearLayout>
+</FrameLayout>

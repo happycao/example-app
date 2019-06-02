@@ -16,7 +16,6 @@ import com.cl.testapp.ui.base.BaseActivity;
 import com.cl.testapp.weixin.WXUtil;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.zhy.http.okhttp.OkHttpUtils;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -40,8 +39,6 @@ import okhttp3.Response;
  */
 public class PayActivity extends BaseActivity {
 
-    private static final String TAG = "xl";
-
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
     @BindView(R.id.alipay)
@@ -56,7 +53,7 @@ public class PayActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_pay);
+        setContentView(R.layout.pay_activity);
         ButterKnife.bind(this);
         init();
         showScheme();
@@ -133,7 +130,8 @@ public class PayActivity extends BaseActivity {
                 String json = response.body().string();
                 String payInfo = null;
                 if (!"".equals(json)) {
-                    Type type = new TypeToken<HttpResult<String>>(){}.getType();
+                    Type type = new TypeToken<HttpResult<String>>() {
+                    }.getType();
                     HttpResult<String> resultData = new Gson().fromJson(json, type);
                     payInfo = resultData.getData();
                 }
@@ -222,17 +220,23 @@ public class PayActivity extends BaseActivity {
     private void doHttpWXPay() {
         //请求自己的服务器获取支付参数
         String url = "";
-        OkHttpUtils.get().url(url).build().execute(new com.zhy.http.okhttp.callback.StringCallback() {
+        OkHttpClient client = new OkHttpClient();
+        Request request = new Request.Builder()
+                .url(url)
+                .get()
+                .build();
+        client.newCall(request).enqueue(new Callback() {
             @Override
-            public void onError(Call call, Exception e, int id) {
-
+            public void onFailure(Call call, IOException e) {
+                Log.d(TAG, "支付信息获取失败");
             }
 
             @Override
-            public void onResponse(String response, int id) {
-                Log.i(TAG, response);
+            public void onResponse(Call call, Response response) throws IOException {
+                String json = response.body() != null ? response.body().string() : "{}";
+                Log.i(TAG, json);
                 WXUtil wxUtil = WXUtil.getInstance(PayActivity.this);
-                wxUtil.doPay(response, new WXUtil.WXPayResultCallBack() {
+                wxUtil.doPay(json, new WXUtil.WXPayResultCallBack() {
                     @Override
                     public void onSuccess() {
                         Log.d(TAG, "支付成功");

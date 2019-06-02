@@ -54,7 +54,7 @@ public class AnimateActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_animate);
+        setContentView(R.layout.animate_activity);
         ButterKnife.bind(this);
         init();
     }
@@ -62,11 +62,13 @@ public class AnimateActivity extends BaseActivity {
     private void init() {
         setToolbar(mToolbar, "元素共享动画测试", true);
         Bundle bundle = getIntent().getExtras();
-        String imgUrl = bundle.getString("animate");
-        Glide.with(this)
-                .load(imgUrl)
-                .asBitmap()
-                .into(mIvAnimate);
+        if (bundle != null) {
+            String imgUrl = bundle.getString("animate");
+            Glide.with(this)
+                    .load(imgUrl)
+                    .asBitmap()
+                    .into(mIvAnimate);
+        }
 
         mInputInfo.addTextChangedListener(new TextWatcher() {
             @Override
@@ -93,7 +95,7 @@ public class AnimateActivity extends BaseActivity {
                 for (String topic : mActionList) {
                     findPos = content.indexOf(topic, findPos);
                     if (findPos != -1) {
-                        ForegroundColorSpan colorSpan = new ForegroundColorSpan(Color.BLUE);
+                        ForegroundColorSpan colorSpan = new ForegroundColorSpan(Color.rgb(3, 169, 244));
                         editable.setSpan(colorSpan, findPos, findPos = findPos + topic.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                         mColorSpans.add(colorSpan);
                     }
@@ -167,6 +169,7 @@ public class AnimateActivity extends BaseActivity {
     private static final String TOPIC = "#([^#]+?)#";
     private static final String AT = "@[\\w\\p{InCJKUnifiedIdeographs}-]{1,26} ";
     private static final String ALL = "(" + AT + ")" + "|" + "(" + TOPIC + ")";
+
     private static ArrayList<String> findAction(String s) {
 
         Pattern p = Pattern.compile(ALL);

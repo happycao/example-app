@@ -9,12 +9,26 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:textColorPrimary">@color/textColorPrimary</item>
+        <item name="android:textColorSecondary">@color/textColorSecondary</item>
     </style>
 
     <style name="AppTheme.Fullscreen" parent="AppTheme">
         <item name="android:windowFullscreen">true</item>
     </style>
 
+    <style name="AppTheme.TransparentStatusBar" parent="AppTheme">
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+    </style>
+
+    <style name="AppTheme.Edit" parent="AppTheme">
+        <item name="colorAccent">#6A03A9F4</item>
+    </style>
+
+    <style name="AppTheme.TextAppearance">
+        <item name="android:textSize">@dimen/font_18</item>
+    </style>
 
     <style name="toolbar">
         <item name="colorControlNormal">#ffffff</item>

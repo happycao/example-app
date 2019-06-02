@@ -4,6 +4,7 @@ import android.app.Application;
 
 import com.cl.testapp.db.DBManager;
 import com.cl.testapp.util.IconFont;
+import com.cl.testapp.util.SPUtil;
 import com.mikepenz.iconics.Iconics;
 
 /**
@@ -17,6 +18,7 @@ public class MyApplication extends Application {
 //        Iconics.init(getBaseContext());
         Iconics.registerFont(new IconFont());
         DBManager.getInstance(getApplicationContext());
+        SPUtil.newInstance().init(this);
     }
 
 }

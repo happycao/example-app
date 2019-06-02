@@ -14,7 +14,7 @@ import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.cl.testapp.R;
 import com.cl.testapp.model.GoBean;
-import com.cl.testapp.util.Util;
+import com.cl.testapp.util.Utils;
 
 import java.util.List;
 
@@ -23,7 +23,7 @@ import butterknife.ButterKnife;
 import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
 import okhttp3.OkHttpClient;
 
-import static com.cl.testapp.util.Util.getScreenWidth;
+import static com.cl.testapp.util.Utils.getScreenWidth;
 
 /**
  * 主页Adapter
@@ -37,9 +37,9 @@ public class WaterfallAdapter extends RecyclerView.Adapter<WaterfallAdapter.MyVi
     private OkHttpClient client = new OkHttpClient();
 
     public interface OnItemClickListener {
-        void onItemClick(View view, int position);
+        void onItemClick(View view, int position, GoBean goBean);
 
-        void onItemLongClick(View view, int position);
+        void onItemLongClick(View view, int position, GoBean goBean);
     }
 
     private OnItemClickListener mOnItemClickListener;
@@ -70,8 +70,8 @@ public class WaterfallAdapter extends RecyclerView.Adapter<WaterfallAdapter.MyVi
                     @Override
                     public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
                         //拿到Bitmap，设置ImageView宽高
-                        int screenWidth = getScreenWidth(mContext);
-                        int width = (screenWidth - Util.dip2px(mContext, 32)) / 3;
+                        int screenWidth = getScreenWidth();
+                        int width = (screenWidth - Utils.dp2px(32)) / 3;
                         int height = width * resource.getHeight() / resource.getWidth();
                         ViewGroup.LayoutParams lp = holder.mImgItem.getLayoutParams();
                         lp.width = width;
@@ -80,7 +80,7 @@ public class WaterfallAdapter extends RecyclerView.Adapter<WaterfallAdapter.MyVi
                         Glide.with(mContext)
                                 .load(mData.get(position).getImgUrl())
                                 .placeholder(R.color.c)
-                                .bitmapTransform(new RoundedCornersTransformation(mContext, Util.dip2px(mContext, 5), 0, RoundedCornersTransformation.CornerType.ALL))
+                                .bitmapTransform(new RoundedCornersTransformation(mContext, Utils.dp2px(5), 0, RoundedCornersTransformation.CornerType.ALL))
                                 .crossFade()
                                 .into(holder.mImgItem);
                     }
@@ -122,14 +122,14 @@ public class WaterfallAdapter extends RecyclerView.Adapter<WaterfallAdapter.MyVi
                 mImgItem.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        mOnItemClickListener.onItemClick(v, mPosition);
+                        mOnItemClickListener.onItemClick(v, mPosition, mData.get(mPosition));
                     }
                 });
 
                 itemView.setOnLongClickListener(new View.OnLongClickListener() {
                     @Override
                     public boolean onLongClick(View v) {
-                        mOnItemClickListener.onItemLongClick(itemView, mPosition);
+                        mOnItemClickListener.onItemLongClick(itemView, mPosition, mData.get(mPosition));
                         return false;
                     }
                 });

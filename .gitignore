@@ -1,7 +1,10 @@
-/build
-/local.properties
 /.gradle
 /.idea
-/app/key.jks
 /app/build
+/app/release
 /app/app.iml
+/captures
+/example-app.iml
+/build
+/.example-app.iml
+/local.properties
